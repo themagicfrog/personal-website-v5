@@ -1,0 +1,158 @@
+---
+import { DEPARTMENT_LABEL, DEPARTMENT_LABEL_SINGULAR, entryData, type NormalizedEntry } from '../lib/content';
+import { formatYearRange } from '../lib/format';
+import { accentForDepartment } from '../data/site';
+import ImageWithCaption from './ImageWithCaption.astro';
+import MetaLine from './MetaLine.astro';
+
+interface Props {
+  entry: NormalizedEntry;
+  showCta?: boolean;
+}
+
+const { entry, showCta = true } = Astro.props;
+const accent = accentForDepartment(entry.department);
+const extra = entryData(entry);
+const typeLine = entry.rawEntry.data.medium ?? (extra.genre as string | undefined) ?? (extra.eventType as string | undefined) ?? entry.status;
+---
+
+<article class="work-card" style={`--accent: ${accent}`}>
+  <a href={entry.href} class="card-link">
+    <ImageWithCaption
+      src={entry.coverImage}
+      alt={entry.title}
+      aspectRatio="4 / 3"
+      accent={accent}
+      placeholderKicker={`${DEPARTMENT_LABEL[entry.department]} / ${formatYearRange(entry.date, entry.endDate)}`}
+      placeholderTitle={entry.title}
+      placeholderMeta={entry.archiveCode}
+    />
+    <div class="card-text">
+      <h3>
+        <span class="title-text">{entry.title}</span>
+        <span class="hover-arrow" aria-hidden="true">→</span>
+      </h3>
+      <p class="summary">{entry.description}</p>
+      <MetaLine items={[typeLine]} />
+      {entry.recognition && (
+        <span class="recognition-badge">
+          <span class="badge-mark" aria-hidden="true"></span>
+          {entry.recognition}
+        </span>
+      )}
+      {showCta && <span class="cta">View {DEPARTMENT_LABEL_SINGULAR[entry.department]} →</span>}
+    </div>
+  </a>
+</article>
+
+<style>
+  .work-card {
+    height: 100%;
+  }
+
+  .card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card-link :global(.image-frame img) {
+    border: 2px solid transparent;
+    transition: transform 0.2s var(--ease-standard), box-shadow 0.2s var(--ease-standard),
+      border-color 0.2s var(--ease-standard);
+  }
+
+  .card-link:hover :global(.image-frame img),
+  .card-link:focus-visible :global(.image-frame img) {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 16px -10px rgba(16, 25, 58, 0.35);
+    border-color: var(--accent);
+  }
+
+  .card-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-top: var(--space-4);
+  }
+
+  h3 {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1.3;
+    color: var(--ink);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='6' viewBox='0 0 60 6'%3E%3Cpath d='M1 3.5C6 1 12 5 18 2.5S30 1 36 3.5 48 5.5 54 2.5s5-1.5 5-1.5' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: 0 100%;
+    background-size: 0 5px;
+    transition: background-size 0.2s var(--ease-standard);
+    padding-bottom: 0.2em;
+  }
+
+  .card-link:hover h3,
+  .card-link:focus-visible h3 {
+    background-size: 26px 5px;
+  }
+
+  .hover-arrow {
+    color: var(--accent);
+    font-size: 1.1rem;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.2s var(--ease-standard), transform 0.2s var(--ease-standard);
+  }
+
+  .card-link:hover .hover-arrow,
+  .card-link:focus-visible .hover-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .summary {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--ink-muted);
+  }
+
+  .recognition-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: fit-content;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    color: color-mix(in srgb, var(--recognition) 80%, var(--ink) 20%);
+  }
+
+  .badge-mark {
+    flex-shrink: 0;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 2px;
+    background-color: var(--recognition);
+    transform: rotate(-8deg);
+  }
+
+  .cta {
+    font-family: var(--font-label);
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-top: var(--space-1);
+  }
+
+  .card-link:hover .cta,
+  .card-link:focus-visible .cta {
+    text-decoration: underline;
+  }
+</style>

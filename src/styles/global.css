@@ -1,0 +1,219 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Darumadrop One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/darumadrop-one-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Chau Philomene One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/chau-philomene-one-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/newsreader-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/newsreader-700.woff2') format('woff2');
+}
+
+:root {
+  --paper: #f2eee4;
+  --paper-light: #faf8f2;
+  --ink: #3d4663;
+  --ink-dark: #10193a;
+  --ink-muted: #686a68;
+  --rule: #c9c2b4;
+
+  --builds: #d36f2d;
+  --photography: #4b6fa5;
+  --writing: #a63f35;
+  --art: #76629a;
+  --events: #5e7555;
+
+  --recognition: #b8912f;
+
+  --page-gutter: clamp(1rem, 4vw, 5rem);
+  --content-max: 1760px;
+  --reading-max: 700px;
+  --radius-small: 2px;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 7rem;
+
+  --font-display: 'Darumadrop One', 'Comic Sans MS', cursive;
+  --font-body: 'Chau Philomene One', 'Comic Sans MS', cursive;
+  --font-label: 'Chau Philomene One', 'Comic Sans MS', cursive;
+  --font-note: 'Newsreader', Georgia, serif;
+  --font-serif: var(--font-body);
+  --font-mono: var(--font-label);
+
+  --ease-standard: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: clamp(1.05rem, 1.2vw, 1.22rem);
+  line-height: 1.7;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  background-color: var(--paper);
+  position: relative;
+  min-height: 100vh;
+}
+
+img,
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.65;
+  background-image: url('/textures/background-texture.png');
+  background-repeat: repeat;
+}
+
+.skip-link {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  z-index: 100;
+  background: var(--ink);
+  color: var(--paper-light);
+  font-family: var(--font-label);
+  font-size: 0.95rem;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-small);
+  transform: translateY(-150%);
+  transition: transform 0.2s var(--ease-standard);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.wrap {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+.reading-column {
+  max-width: var(--reading-max);
+  margin-inline: auto;
+}
+
+.kicker {
+  font-family: var(--font-label);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.meta {
+  font-family: var(--font-label);
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+  color: var(--ink-muted);
+}
+
+.tilt-c {
+  transform: rotate(-1deg);
+}
+
+.wobbly-border {
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+
+.title-texture {
+  background-color: var(--ink-dark);
+  background-image: url('/textures/word-texture.png');
+  background-repeat: repeat;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  z-index: 2;
+}

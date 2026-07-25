@@ -1,0 +1,90 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SectionHero from '../../components/SectionHero.astro';
+import ImageWithCaption from '../../components/ImageWithCaption.astro';
+import MetaLine from '../../components/MetaLine.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import { getPublishedCollection, sortByDate } from '../../lib/content';
+import { accentForDepartment, descriptionForDepartment } from '../../data/site';
+import { formatDateShort } from '../../lib/format';
+
+const entries = sortByDate(await getPublishedCollection('events'));
+const accent = accentForDepartment('events');
+---
+
+<Layout
+  title="Events"
+  description="Programs, workshops, collaborations, exhibitions, and community projects."
+  section="/events"
+>
+  <SectionHero
+    title="Events"
+    description={descriptionForDepartment('events')}
+    accent={accent}
+  />
+
+  <div class="wrap">
+    {entries.length === 0 ? (
+      <EmptyState message="New event records will be filed here soon." accent={accent} />
+    ) : (
+      <div class="dispatch-grid">
+        {entries.map((entry) => (
+          <a href={entry.href} class="dispatch-card">
+            <ImageWithCaption
+              src={entry.coverImage}
+              alt={entry.title}
+              aspectRatio="3 / 4"
+              accent={accent}
+              placeholderKicker="Events"
+              placeholderTitle={entry.title}
+              placeholderMeta={formatDateShort(entry.date)}
+            />
+            <span class="dispatch-date meta">{formatDateShort(entry.date)}</span>
+            <span class="dispatch-title">{entry.title}</span>
+            <MetaLine items={[entry.rawEntry.data.location, entry.rawEntry.data.role]} />
+          </a>
+        ))}
+      </div>
+    )}
+  </div>
+</Layout>
+
+<style>
+  .dispatch-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    padding-bottom: var(--space-9);
+  }
+
+  .dispatch-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .dispatch-date {
+    display: block;
+    margin-top: var(--space-3);
+    text-transform: uppercase;
+  }
+
+  .dispatch-title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    margin-top: var(--space-1);
+  }
+
+  @media (min-width: 768px) {
+    .dispatch-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .dispatch-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

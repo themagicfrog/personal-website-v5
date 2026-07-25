@@ -1,0 +1,51 @@
+---
+import type { NormalizedEntry } from '../lib/content';
+import WorkCard from './WorkCard.astro';
+import EmptyState from './EmptyState.astro';
+
+interface Props {
+  entries: NormalizedEntry[];
+  emptyMessage: string;
+  accent: string;
+  showCta?: boolean;
+}
+
+const { entries, emptyMessage, accent, showCta = true } = Astro.props;
+---
+
+<div class="wrap">
+  {entries.length === 0 ? (
+    <EmptyState message={emptyMessage} accent={accent} />
+  ) : (
+    <div class="grid">
+      {entries.map((entry) => <WorkCard entry={entry} showCta={showCta} />)}
+    </div>
+  )}
+</div>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+
+  @media (min-width: 768px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1680px) {
+    .grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

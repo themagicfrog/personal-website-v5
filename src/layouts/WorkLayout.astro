@@ -1,0 +1,234 @@
+---
+import { DEPARTMENT_LABEL, type NormalizedEntry, type Department } from '../lib/content';
+import { formatDateRange } from '../lib/format';
+import { accentForDepartment } from '../data/site';
+import Layout from './Layout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import MetaLine from '../components/MetaLine.astro';
+import TagList from '../components/TagList.astro';
+import ImageWithCaption from '../components/ImageWithCaption.astro';
+
+interface ExternalLink {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  entry: NormalizedEntry;
+  department: Department;
+  metaItems?: (string | undefined)[];
+  links?: ExternalLink[];
+  galleryLayout?: 'grid' | 'contact-sheet';
+}
+
+const { entry, department, metaItems = [], links = [], galleryLayout = 'grid' } = Astro.props;
+const contactSheetRatios = ['3 / 4', '4 / 3', '1 / 1', '4 / 5'];
+const accent = accentForDepartment(department);
+const label = DEPARTMENT_LABEL[department];
+---
+
+<Layout title={entry.title} description={entry.description} image={entry.coverImage} section={`/${department}`} articleType="article">
+  <article class="work-detail" style={`--accent: ${accent}`}>
+    <header class="wrap detail-head">
+      <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label, href: `/${department}` }, { label: entry.title }]} />
+      <h1 class="title-texture">{entry.title}</h1>
+      <p class="summary">{entry.description}</p>
+      {entry.recognition && (
+        <span class="recognition-badge">
+          <span class="badge-mark" aria-hidden="true"></span>
+          {entry.recognition}
+        </span>
+      )}
+      <MetaLine items={[formatDateRange(entry.date, entry.endDate, entry.dateHasDay), entry.rawEntry.data.role, ...metaItems]} />
+      {entry.tags.length > 0 && <TagList tags={entry.tags} />}
+    </header>
+
+    <div class="wrap hero-media">
+      <ImageWithCaption
+        src={entry.coverImage}
+        alt={entry.title}
+        aspectRatio="16 / 9"
+        accent={accent}
+        placeholderKicker={label}
+        placeholderTitle={entry.title}
+        placeholderMeta={entry.archiveCode}
+        loading="eager"
+      />
+    </div>
+
+    <div class="wrap reading-column body">
+      <slot />
+    </div>
+
+    {entry.images.length > 0 && (
+      <div class:list={['wrap gallery', { 'contact-sheet': galleryLayout === 'contact-sheet' }]}>
+        {entry.images.map((src, i) => (
+          <ImageWithCaption
+            src={src}
+            alt={entry.title}
+            aspectRatio={galleryLayout === 'contact-sheet' ? contactSheetRatios[i % contactSheetRatios.length] : '4 / 3'}
+            accent={accent}
+          />
+        ))}
+      </div>
+    )}
+
+    {links.length > 0 && (
+      <div class="wrap reading-column extras">
+        <ul class="external-links">
+          {links.map((link) => (
+            <li><a href={link.href}>{link.label} →</a></li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+  </article>
+</Layout>
+
+<style>
+  .recognition-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: fit-content;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.3;
+    color: color-mix(in srgb, var(--recognition) 80%, var(--ink) 20%);
+  }
+
+  .badge-mark {
+    flex-shrink: 0;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 2px;
+    background-color: var(--recognition);
+    transform: rotate(-8deg);
+  }
+
+  .detail-head {
+    padding-block: var(--space-6) var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1.35;
+  }
+
+  .summary {
+    font-family: var(--font-serif);
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    line-height: 1.4;
+    max-width: 60ch;
+  }
+
+  .hero-media {
+    max-width: 900px;
+    margin-inline: auto;
+    padding-bottom: var(--space-7);
+  }
+
+  .body {
+    font-size: 1.1rem;
+    line-height: 1.65;
+    padding-bottom: var(--space-7);
+  }
+
+  .body :global(p) {
+    margin-bottom: var(--space-5);
+  }
+
+  .body :global(h2) {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    margin-top: var(--space-7);
+    margin-bottom: var(--space-4);
+  }
+
+  .body :global(img) {
+    border-radius: var(--radius-small);
+    margin-block: var(--space-5);
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    padding-bottom: var(--space-7);
+  }
+
+  .gallery.contact-sheet {
+    display: block;
+    column-count: 1;
+    column-gap: var(--space-5);
+  }
+
+  .gallery.contact-sheet > :global(*) {
+    break-inside: avoid;
+    margin-bottom: var(--space-5);
+  }
+
+  @media (min-width: 768px) {
+    .gallery.contact-sheet {
+      column-count: 2;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .gallery.contact-sheet {
+      column-count: 3;
+    }
+  }
+
+  .extras {
+    padding-bottom: var(--space-7);
+  }
+
+  .external-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .external-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-label);
+    font-size: 1.2rem;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    color: var(--accent);
+    padding: var(--space-3) var(--space-6);
+    border: 2px solid var(--accent);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    background-color: color-mix(in srgb, var(--accent) 10%, var(--paper-light));
+    box-shadow: 2px 2px 0 -1px var(--paper), 3px 3px 0 -1px var(--accent);
+    transition: transform 0.2s var(--ease-standard), background-color 0.2s var(--ease-standard),
+      color 0.2s var(--ease-standard);
+  }
+
+  .external-links a:hover,
+  .external-links a:focus-visible {
+    background-color: var(--accent);
+    color: var(--paper-light);
+    transform: scale(1.05) rotate(-1deg);
+  }
+
+  @media (min-width: 768px) {
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

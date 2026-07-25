@@ -1,0 +1,25 @@
+---
+import WorkLayout from '../../layouts/WorkLayout.astro';
+import { getDepartmentStaticPaths, getEntryDetail } from '../../lib/content';
+
+export const getStaticPaths = () => getDepartmentStaticPaths('builds');
+
+const { entry } = Astro.props;
+const { Content } = await getEntryDetail(entry);
+
+const data = entry.rawEntry.data;
+const links = [
+  data.demo ? { label: 'Live Demo', href: data.demo } : null,
+  data.repository ? { label: 'Repository', href: data.repository } : null,
+  data.link && data.link !== data.demo ? { label: 'External Link', href: data.link } : null,
+].filter((link): link is { label: string; href: string } => link !== null);
+---
+
+<WorkLayout
+  entry={entry}
+  department="builds"
+  metaItems={[data.projectType, data.tools.join(' · '), data.status]}
+  links={links}
+>
+  <Content />
+</WorkLayout>

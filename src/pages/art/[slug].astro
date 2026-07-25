@@ -1,0 +1,23 @@
+---
+import WorkLayout from '../../layouts/WorkLayout.astro';
+import { getDepartmentStaticPaths, getEntryDetail } from '../../lib/content';
+
+export const getStaticPaths = () => getDepartmentStaticPaths('art');
+
+const { entry } = Astro.props;
+const { Content } = await getEntryDetail(entry);
+
+const data = entry.rawEntry.data;
+const links = [
+  data.link ? { label: 'External Link', href: data.link } : null,
+].filter((link): link is { label: string; href: string } => link !== null);
+---
+
+<WorkLayout
+  entry={entry}
+  department="art"
+  metaItems={[data.medium, data.dimensions, data.materials.join(' · '), data.exhibition]}
+  links={links}
+>
+  <Content />
+</WorkLayout>

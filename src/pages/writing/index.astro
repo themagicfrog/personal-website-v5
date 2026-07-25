@@ -1,0 +1,121 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SectionHero from '../../components/SectionHero.astro';
+import MetaLine from '../../components/MetaLine.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import { getPublishedCollection, sortByDate } from '../../lib/content';
+import { accentForDepartment, descriptionForDepartment } from '../../data/site';
+import { formatDateShort, formatWordCount } from '../../lib/format';
+
+const entries = sortByDate(await getPublishedCollection('writing'));
+const accent = accentForDepartment('writing');
+---
+
+<Layout
+  title="Writing"
+  description="Fiction, journalism, essays, and stories."
+  section="/writing"
+>
+  <SectionHero
+    title="Writing"
+    description={descriptionForDepartment('writing')}
+    accent={accent}
+  />
+
+  <div class="wrap">
+    {entries.length === 0 ? (
+      <EmptyState message="New writing will be filed here soon." accent={accent} />
+    ) : (
+      <ol class="contents-page" style={`--accent: ${accent}`}>
+        {entries.map((entry) => {
+          const data = entry.rawEntry.data;
+          return (
+            <li>
+              <div class="entry-head">
+                <h2><a href={entry.href}>{entry.title}</a></h2>
+                <MetaLine
+                  items={[
+                    data.genre,
+                    formatDateShort(entry.date),
+                    data.wordCount ? formatWordCount(data.wordCount) : undefined,
+                  ]}
+                />
+              </div>
+              {entry.recognition && <p class="meta recognition">{entry.recognition}</p>}
+              <p class="synopsis">{entry.description}</p>
+              <a href={entry.href} class="cta">Read piece →</a>
+            </li>
+          );
+        })}
+      </ol>
+    )}
+  </div>
+</Layout>
+
+<style>
+  .contents-page {
+    list-style: none;
+    margin: 0;
+    padding-bottom: var(--space-9);
+    column-count: 1;
+    column-gap: var(--space-8);
+  }
+
+  .contents-page li {
+    break-inside: avoid;
+    padding-block: var(--space-6);
+    border-top: 1px solid var(--rule);
+  }
+
+  .entry-head h2 {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+
+  .entry-head h2 a {
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .entry-head h2 a:hover,
+  .entry-head h2 a:focus-visible {
+    text-decoration: underline;
+  }
+
+  .recognition {
+    color: var(--accent);
+    margin-top: var(--space-2);
+  }
+
+  .synopsis {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.55;
+    margin-top: var(--space-3);
+    max-width: 62ch;
+  }
+
+  .cta {
+    display: inline-block;
+    margin-top: var(--space-3);
+    font-family: var(--font-label);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .cta:hover,
+  .cta:focus-visible {
+    text-decoration: underline;
+  }
+
+  @media (min-width: 1024px) {
+    .contents-page {
+      column-count: 2;
+    }
+  }
+</style>

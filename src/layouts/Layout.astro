@@ -1,0 +1,132 @@
+---
+import '../styles/global.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  section?: string;
+  articleType?: 'website' | 'article';
+  hideHeader?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  image = site.defaultOgImage,
+  section,
+  articleType = 'website',
+  hideHeader = false,
+} = Astro.props;
+
+const pageTitle = title === site.title ? title : `${title} — ${site.title}`;
+const canonicalURL = Astro.site ? new URL(Astro.url.pathname, Astro.site) : Astro.url.pathname;
+const ogImageURL = Astro.site ? new URL(image, Astro.site) : image;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <meta property="og:type" content={articleType} />
+    <meta property="og:site_name" content={site.title} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:url" content={canonicalURL} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+
+    <meta name="theme-color" content="#f2eee4" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/favicon.ico" />
+
+    <link rel="preload" href="/fonts/darumadrop-one-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/chau-philomene-one-400.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    {!hideHeader && <SiteHeader activeHref={section} />}
+    <main id="main">
+      <slot />
+    </main>
+    <canvas id="cursor-trail"></canvas>
+  </body>
+</html>
+
+<style>
+  #cursor-trail {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('cursor-trail') as HTMLCanvasElement | null;
+
+  if (canvas && !reduceMotion) {
+    const ctx = canvas.getContext('2d')!;
+    const TRAIL_COLOR = '99, 64, 29';
+    const EASE = 0.15;
+    const FADE = 0.045;
+    const RADIUS = 60;
+    const DOTS = 140;
+
+    const target = { x: -1000, y: -1000 };
+    const pos = { x: -1000, y: -1000 };
+    let moved = false;
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas!.width = window.innerWidth * dpr;
+      canvas!.height = window.innerHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    window.addEventListener('mousemove', (e) => {
+      target.x = e.clientX;
+      target.y = e.clientY;
+      moved = true;
+    });
+
+    function frame() {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = `rgba(0, 0, 0, ${FADE})`;
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+      ctx.globalCompositeOperation = 'source-over';
+
+      pos.x += (target.x - pos.x) * EASE;
+      pos.y += (target.y - pos.y) * EASE;
+
+      if (moved) {
+        ctx.fillStyle = `rgba(${TRAIL_COLOR}, 0.12)`;
+        for (let i = 0; i < DOTS; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const r = Math.random() * RADIUS;
+          const size = 0.5 + Math.random() * 1.2;
+          ctx.fillRect(pos.x + Math.cos(angle) * r, pos.y + Math.sin(angle) * r, size, size);
+        }
+        moved = false;
+      }
+
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+</script>

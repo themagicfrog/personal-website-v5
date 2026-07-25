@@ -1,0 +1,93 @@
+---
+interface Props {
+  src?: string;
+  alt: string;
+  aspectRatio?: string;
+  caption?: string;
+  loading?: 'lazy' | 'eager';
+  accent?: string;
+  placeholderKicker?: string;
+  placeholderTitle?: string;
+  placeholderMeta?: string;
+}
+
+const {
+  src,
+  alt,
+  aspectRatio = '4 / 3',
+  caption,
+  loading = 'lazy',
+  accent = 'var(--ink-muted)',
+  placeholderKicker,
+  placeholderTitle,
+  placeholderMeta,
+} = Astro.props;
+---
+
+<figure class="image-frame" style={`--aspect: ${aspectRatio}; --accent: ${accent}`}>
+  {
+    src ? (
+      <img src={src} alt={alt} loading={loading} />
+    ) : (
+      <div class="placeholder" role="img" aria-label={alt}>
+        {placeholderKicker && <span class="kicker">{placeholderKicker}</span>}
+        <span class="note">future {placeholderTitle ? placeholderTitle.toLowerCase() : 'image'}</span>
+        {placeholderMeta && <span class="meta">{placeholderMeta}</span>}
+      </div>
+    )
+  }
+  {caption && <figcaption class="meta">{caption}</figcaption>}
+</figure>
+
+<style>
+  .image-frame {
+    margin: 0;
+  }
+
+  .image-frame img {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    aspect-ratio: var(--aspect);
+    object-fit: cover;
+    border-radius: var(--radius-small);
+  }
+
+  .placeholder {
+    position: relative;
+    width: 100%;
+    aspect-ratio: var(--aspect);
+    border: 1.5px solid var(--accent);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    background-color: color-mix(in srgb, var(--accent) 8%, var(--paper-light));
+    box-shadow: 2px 2px 0 -1px var(--paper), 3px 3px 0 -1px var(--accent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    text-align: center;
+    padding: var(--space-4);
+  }
+
+  .placeholder .kicker {
+    color: var(--accent);
+  }
+
+  .placeholder .note {
+    font-family: var(--font-note);
+    font-size: 1.25rem;
+    color: var(--ink-muted);
+    line-height: 1.2;
+  }
+
+  .placeholder .meta {
+    color: var(--ink-muted);
+  }
+
+  figcaption.meta {
+    margin-top: var(--space-2);
+    font-family: var(--font-note);
+    font-size: 1.05rem;
+  }
+</style>

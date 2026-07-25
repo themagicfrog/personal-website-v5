@@ -1,0 +1,20 @@
+---
+interface Props {
+  items: (string | undefined)[];
+}
+
+const { items } = Astro.props;
+const filtered = items.filter((item): item is string => Boolean(item));
+---
+
+{filtered.length > 0 && (
+  <p class="meta-line meta">
+    {filtered.join(' · ')}
+  </p>
+)}
+
+<style>
+  .meta-line {
+    text-transform: uppercase;
+  }
+</style>

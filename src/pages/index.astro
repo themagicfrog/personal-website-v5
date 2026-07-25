@@ -1,0 +1,614 @@
+---
+import Layout from '../layouts/Layout.astro';
+import WorkGrid from '../components/WorkGrid.astro';
+import { site, accentForDepartment, taglineForDepartment } from '../data/site';
+import { getPublishedCollection, DEPARTMENT_LABEL, type Department } from '../lib/content';
+
+const titleLetters = 'estella gu'.split('');
+
+const SHOW_HERO_PHOTOS = false;
+
+const departments = site.navigation.map((item) => ({
+  ...item,
+  accent: accentForDepartment(item.href.slice(1)),
+}));
+
+const FEATURED_ORDER: Department[] = ['builds', 'art', 'photography', 'writing', 'events'];
+
+const featuredByDepartment = await Promise.all(
+  FEATURED_ORDER.map(async (department) => {
+    const entries = (await getPublishedCollection(department))
+      .filter((entry) => entry.featured)
+      .sort((a, b) => {
+        const orderA = a.featuredOrder ?? Number.POSITIVE_INFINITY;
+        const orderB = b.featuredOrder ?? Number.POSITIVE_INFINITY;
+        if (orderA !== orderB) return orderA - orderB;
+        return b.date.getTime() - a.date.getTime();
+      });
+    return {
+      department,
+      href: `/${department}`,
+      label: DEPARTMENT_LABEL[department],
+      accent: accentForDepartment(department),
+      tagline: taglineForDepartment(department),
+      entries,
+    };
+  })
+);
+
+const currentYear = new Date().getFullYear();
+const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+---
+
+<Layout title={site.title} description="Estella Gu — builds, art, photography, writing, and events from a Massachusetts high schooler exploring technology and creativity" hideHeader>
+  <section class="hero" id="top">
+    <h1>
+      <span class="visually-hidden">estella gu</span>
+      <span class="letters" aria-hidden="true">
+        {titleLetters.map((char, i) =>
+          char === ' ' ? (
+            ' '
+          ) : (
+            <span class="letter title-texture" style={`animation-delay: ${i * 0.14}s`}>
+              {char}
+            </span>
+          )
+        )}
+      </span>
+    </h1>
+  </section>
+
+  <section class="bio wrap">
+    <div class="bio-layout">
+      {SHOW_HERO_PHOTOS && (
+        <div class="photo-row-slot">
+          <div class="photo-row" data-photo-row aria-label="Photos of Estella">
+            <button type="button" class="photo-print" data-photo-print style="--rest-rot: -1deg; --rest-ty: 3px;">
+              <img src="/images/home/photo-3.jpg" alt="" loading="eager" />
+            </button>
+            <button type="button" class="photo-print" data-photo-print style="--rest-rot: 1.3deg; --rest-ty: -3px;">
+              <img src="/images/home/photo-1.jpg" alt="" loading="eager" />
+            </button>
+            <button type="button" class="photo-print" data-photo-print style="--rest-rot: -0.8deg; --rest-ty: 4px;">
+              <img src="/images/home/photo-2.jpg" alt="" loading="eager" />
+            </button>
+            <button type="button" class="photo-print" data-photo-print style="--rest-rot: 1.1deg; --rest-ty: -2px;">
+              <img src="/images/home/photo-6.jpg" alt="" loading="lazy" />
+            </button>
+            <button type="button" class="photo-print" data-photo-print style="--rest-rot: -1.4deg; --rest-ty: 3px;">
+              <img src="/images/home/photo-4.jpg" alt="" loading="lazy" />
+            </button>
+          </div>
+        </div>
+      )}
+      <div class="bio-text">
+        <p class="subtitle">
+          i'm a high school student who loves creating and leading projects
+          <br />
+          that bring art, technology, and people together.
+        </p>
+        <p class="subtitle subtitle-second">
+          my work spans creative coding, hardware, visual art,
+          <br />
+          writing, photography, and community programs.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {featuredByDepartment.map(
+    ({ href, label, accent, tagline, entries }) =>
+      entries.length > 0 && (
+        <section class="featured">
+          <div class="featured-head wrap">
+            <div class="featured-head-text">
+              <h2 class="featured-heading" style={`color: ${accent}`}>{label.toLowerCase()}</h2>
+              <p class="featured-tagline">{tagline}</p>
+            </div>
+            <a href={href} class="see-all" style={`color: ${accent}`}>see all {label.toLowerCase()} →</a>
+          </div>
+          <WorkGrid entries={entries} emptyMessage="" accent={accent} showCta={false} />
+        </section>
+      )
+  )}
+
+  <nav class="dept-line wrap" aria-label="Departments">
+    <ul>
+      {departments.map((dept, deptIndex) => (
+        <li>
+          <a href={dept.href} class="dept-link" style={`color: ${dept.accent}`}>
+            {dept.label.split('').map((char, charIndex) =>
+              char === ' ' ? (
+                ' '
+              ) : (
+                <span class="letter" style={`animation-delay: ${deptIndex * 0.12 + charIndex * 0.05}s`}>{char}</span>
+              )
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  <footer class="site-footer wrap">
+    <div class="footer-top">
+      <p class="footer-heading">say hello, explore more, or find me elsewhere.</p>
+      <span class="footer-doodle" aria-hidden="true">✦</span>
+    </div>
+
+    <ul class="footer-links">
+      {site.contact.map((link) => (
+        <li>
+          <a href={link.href} class="contact-link" target="_blank" rel="noopener noreferrer">
+            {link.label}
+          </a>
+        </li>
+      ))}
+      <li><a href="#top" class="contact-link" data-back-to-top>Back to top</a></li>
+    </ul>
+
+    <div class="footer-meta">
+      <span>
+        Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>
+      </span>
+      <span>Last updated {lastUpdated}</span>
+      <span>© {currentYear} Estella Gu</span>
+    </div>
+  </footer>
+</Layout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.letter').forEach((el) => {
+    el.addEventListener('animationend', (event) => {
+      if (event.animationName === 'letter-enter') {
+        el.classList.add('settled');
+        el.style.removeProperty('animation-delay');
+      }
+      if (event.animationName === 'letter-wiggle') {
+        el.classList.remove('wiggling');
+      }
+    });
+
+    el.addEventListener('mouseenter', () => {
+      if (el.classList.contains('settled') && !el.classList.contains('wiggling')) {
+        el.classList.add('wiggling');
+      }
+    });
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-photo-row]').forEach((row) => {
+    const prints = Array.from(row.querySelectorAll<HTMLButtonElement>('[data-photo-print]'));
+
+    if (prints.length > 0) {
+      prints.forEach((print) => print.classList.add('photo-enter-init'));
+
+      const rowRect = row.getBoundingClientRect();
+      const rowCenterX = rowRect.left + rowRect.width / 2;
+
+      prints.forEach((print, i) => {
+        const printRect = print.getBoundingClientRect();
+        const printCenterX = printRect.left + printRect.width / 2;
+        print.style.setProperty('--start-x', `${rowCenterX - printCenterX}px`);
+        print.style.setProperty('--enter-delay', `${i * 90}ms`);
+      });
+
+      requestAnimationFrame(() => {
+        prints.forEach((print) => {
+          print.classList.remove('photo-enter-init');
+          print.classList.add('photo-enter-play');
+        });
+      });
+    }
+
+    let selected: HTMLButtonElement | null = null;
+
+    prints.forEach((print) => {
+      print.addEventListener('click', () => {
+        if (selected === print) {
+          selected.classList.remove('is-selected');
+          selected = null;
+        } else {
+          selected?.classList.remove('is-selected');
+          print.classList.add('is-selected');
+          selected = print;
+        }
+      });
+    });
+  });
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-back-to-top]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+<style>
+  .hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-block: var(--space-5) 0;
+    animation: hero-shake 0.6s ease-out;
+  }
+
+  @keyframes hero-shake {
+    0% {
+      transform: translate(0, 0);
+    }
+    15% {
+      transform: translate(-3px, 1px);
+    }
+    30% {
+      transform: translate(3px, -1px);
+    }
+    45% {
+      transform: translate(-2px, 1px);
+    }
+    60% {
+      transform: translate(2px, 0);
+    }
+    75% {
+      transform: translate(-1px, 1px);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.75rem, 18vw, 12rem);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    transform: translateY(-4%);
+  }
+
+  .letter {
+    display: inline-block;
+    cursor: default;
+    animation: letter-enter 0.75s ease-out both;
+  }
+
+  .letter.settled {
+    animation: none;
+  }
+
+  .letter.settled.wiggling {
+    animation: letter-wiggle 0.4s ease;
+  }
+
+  @keyframes letter-enter {
+    0% {
+      opacity: 0;
+      transform: translateY(12px) rotate(-12deg) scale(0.7);
+    }
+    45% {
+      opacity: 1;
+      transform: translateY(-4px) rotate(7deg) scale(1.06);
+    }
+    65% {
+      transform: translateY(1px) rotate(-4deg) scale(0.98);
+    }
+    82% {
+      transform: translateY(0) rotate(2deg) scale(1.01);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) rotate(0deg) scale(1);
+    }
+  }
+
+  @keyframes letter-wiggle {
+    0% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(-9deg);
+    }
+    55% {
+      transform: rotate(7deg);
+    }
+    80% {
+      transform: rotate(-4deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  .bio {
+    padding-block: 0 var(--space-6);
+  }
+
+  .bio-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-5);
+  }
+
+  .bio-text {
+    max-width: 900px;
+    text-align: center;
+  }
+
+  .subtitle {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    line-height: 1.65;
+    color: color-mix(in srgb, var(--ink) 85%, white 15%);
+    animation: bio-fade-up 650ms var(--ease-standard) both;
+    animation-delay: 250ms;
+  }
+
+  .subtitle-second {
+    margin-top: var(--space-3);
+    animation-delay: 400ms;
+  }
+
+  @keyframes bio-fade-up {
+    0% {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .photo-row-slot {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .photo-row {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    max-width: 1000px;
+    min-width: 0;
+    padding-block: var(--space-2);
+  }
+
+  .photo-print {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transform: translateY(var(--rest-ty, 0px)) rotate(var(--rest-rot, 0deg));
+    transition: transform 350ms var(--ease-standard), opacity 350ms var(--ease-standard);
+  }
+
+  .photo-print.photo-enter-init {
+    opacity: 0;
+  }
+
+  .photo-print.photo-enter-play {
+    animation: photo-enter 700ms var(--ease-standard) both;
+    animation-delay: var(--enter-delay, 0ms);
+  }
+
+  @keyframes photo-enter {
+    0% {
+      opacity: 0;
+      transform: translateX(var(--start-x, 0px)) translateY(var(--rest-ty, 0px)) scale(0.3) rotate(0deg);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0) translateY(var(--rest-ty, 0px)) scale(1) rotate(var(--rest-rot, 0deg));
+    }
+  }
+
+  .photo-print img {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border: 6px solid var(--paper-light);
+    border-radius: 2px;
+    box-shadow: 0 3px 6px -2px rgba(16, 25, 58, 0.22);
+  }
+
+  .photo-print:hover,
+  .photo-print:focus-visible,
+  .photo-print.is-selected {
+    transform: scale(1.08) translateY(-6px) rotate(0deg);
+    z-index: 5;
+  }
+
+  .photo-row:has(.photo-print:hover) .photo-print:not(:hover),
+  .photo-row:has(.photo-print:focus-visible) .photo-print:not(:focus-visible) {
+    opacity: 0.55;
+    transform: scale(0.96);
+  }
+
+  @media (max-width: 767px) {
+    .photo-row {
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+      padding-inline: var(--space-2);
+    }
+
+    .photo-print {
+      flex: 0 0 60%;
+      scroll-snap-align: center;
+    }
+  }
+
+  .featured {
+    padding-block: var(--space-3) var(--space-2);
+  }
+
+  .featured-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-5);
+    margin-bottom: var(--space-5);
+  }
+
+  .featured-heading {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    line-height: 1.2;
+  }
+
+  .featured-tagline {
+    font-family: var(--font-label);
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-muted);
+    margin-top: var(--space-1);
+  }
+
+  .see-all {
+    font-family: var(--font-label);
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .see-all:hover,
+  .see-all:focus-visible {
+    text-decoration: underline;
+  }
+
+  .dept-line {
+    padding-block: var(--space-5) var(--space-6);
+    text-align: center;
+  }
+
+  .dept-line ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3) var(--space-7);
+  }
+
+  .dept-link {
+    display: inline-flex;
+    text-decoration: none;
+    transition: transform 0.2s var(--ease-standard), filter 0.2s var(--ease-standard);
+  }
+
+  .dept-link:hover,
+  .dept-link:focus-visible {
+    transform: scale(1.12);
+    filter: brightness(0.75);
+  }
+
+  .dept-link:active {
+    transform: scale(0.92);
+    filter: brightness(0.85);
+  }
+
+  .dept-link .letter {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 3.5vw, 3rem);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  .site-footer {
+    padding-block: var(--space-6) var(--space-7);
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+
+  .footer-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+  }
+
+  .footer-heading {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    color: var(--ink-muted);
+  }
+
+  .footer-doodle {
+    font-size: 1.1rem;
+    color: var(--ink-muted);
+    transform: rotate(-8deg);
+  }
+
+  .footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3) var(--space-6);
+    margin-bottom: var(--space-5);
+  }
+
+  .contact-link {
+    font-family: var(--font-label);
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-muted);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 4px;
+    transition: text-decoration-color 0.2s var(--ease-standard), color 0.2s var(--ease-standard);
+  }
+
+  .contact-link:hover,
+  .contact-link:focus-visible {
+    color: var(--ink);
+    text-decoration-color: currentColor;
+  }
+
+  .footer-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2) var(--space-5);
+    font-family: var(--font-label);
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-muted);
+  }
+
+  .footer-meta a {
+    color: var(--ink-muted);
+    text-decoration: underline;
+  }
+
+  .footer-meta a:hover,
+  .footer-meta a:focus-visible {
+    color: var(--ink);
+  }
+</style>

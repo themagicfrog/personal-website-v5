@@ -1,0 +1,45 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  accent: string;
+}
+
+const { title, description, accent } = Astro.props;
+---
+
+<header class="section-hero wrap" style={`--accent: ${accent}`}>
+  <h1 class="title-texture">{title}</h1>
+  <p class="description">{description}</p>
+  <div class="rule" aria-hidden="true"></div>
+</header>
+
+<style>
+  .section-hero {
+    padding-block: var(--space-6) var(--space-6);
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-5);
+  }
+
+  .description {
+    font-family: var(--font-serif);
+    font-size: clamp(1.15rem, 2vw, 1.6rem);
+    line-height: 1.45;
+    max-width: 62ch;
+    color: var(--ink);
+  }
+
+  .rule {
+    margin-top: var(--space-6);
+    height: 3px;
+    background-color: var(--accent);
+    width: 4rem;
+  }
+</style>

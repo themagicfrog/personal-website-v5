@@ -1,0 +1,24 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SectionHero from '../../components/SectionHero.astro';
+import WorkGrid from '../../components/WorkGrid.astro';
+import { getPublishedCollection, sortByDate } from '../../lib/content';
+import { accentForDepartment, descriptionForDepartment } from '../../data/site';
+
+const entries = sortByDate(await getPublishedCollection('art'));
+const accent = accentForDepartment('art');
+---
+
+<Layout
+  title="Art"
+  description="Drawings, digital work, books, objects, and mixed-media projects."
+  section="/art"
+>
+  <SectionHero
+    title="Art"
+    description={descriptionForDepartment('art')}
+    accent={accent}
+  />
+
+  <WorkGrid entries={entries} emptyMessage="New artwork will be filed here soon." accent={accent} />
+</Layout>

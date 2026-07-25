@@ -1,0 +1,24 @@
+---
+import WorkLayout from '../../layouts/WorkLayout.astro';
+import { getDepartmentStaticPaths, getEntryDetail } from '../../lib/content';
+import { formatWordCount, formatReadingTime } from '../../lib/format';
+
+export const getStaticPaths = () => getDepartmentStaticPaths('writing');
+
+const { entry } = Astro.props;
+const { Content } = await getEntryDetail(entry);
+
+const data = entry.rawEntry.data;
+const links = [
+  data.link ? { label: data.publication ?? 'External Link', href: data.link } : null,
+].filter((link): link is { label: string; href: string } => link !== null);
+---
+
+<WorkLayout
+  entry={entry}
+  department="writing"
+  metaItems={[data.genre, data.wordCount ? formatWordCount(data.wordCount) : undefined, data.readingTime ? formatReadingTime(data.readingTime) : undefined]}
+  links={links}
+>
+  <Content />
+</WorkLayout>

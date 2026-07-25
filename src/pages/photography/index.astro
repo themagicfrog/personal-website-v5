@@ -1,0 +1,87 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SectionHero from '../../components/SectionHero.astro';
+import ImageWithCaption from '../../components/ImageWithCaption.astro';
+import MetaLine from '../../components/MetaLine.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import { getPublishedCollection, sortByDate } from '../../lib/content';
+import { accentForDepartment, descriptionForDepartment } from '../../data/site';
+import { formatDateShort } from '../../lib/format';
+
+const entries = sortByDate(await getPublishedCollection('photography'));
+const accent = accentForDepartment('photography');
+---
+
+<Layout
+  title="Photography"
+  description="Street scenes, journeys, people, details, and visual collections."
+  section="/photography"
+>
+  <SectionHero
+    title="Photography"
+    description={descriptionForDepartment('photography')}
+    accent={accent}
+  />
+
+  <div class="wrap">
+    {entries.length === 0 ? (
+      <EmptyState message="New photographic collections will be filed here soon." accent={accent} />
+    ) : (
+      <div class="collections">
+        {entries.map((entry) => {
+          const data = entry.rawEntry.data;
+          const photoCountLabel = data.photoCount ? `${data.photoCount} photographs` : undefined;
+          return (
+            <a href={entry.href} class="collection">
+              <ImageWithCaption
+                src={entry.coverImage}
+                alt={entry.title}
+                aspectRatio="4 / 5"
+                accent={accent}
+                placeholderKicker="Photography"
+                placeholderTitle={entry.title}
+                placeholderMeta={photoCountLabel ?? entry.archiveCode}
+              />
+              <span class="title">{entry.title}</span>
+              <MetaLine items={[photoCountLabel, formatDateShort(entry.date), data.themes.join(' / ')]} />
+            </a>
+          );
+        })}
+      </div>
+    )}
+  </div>
+</Layout>
+
+<style>
+  .collections {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-7);
+    padding-bottom: var(--space-9);
+  }
+
+  .collection {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    margin-top: var(--space-3);
+  }
+
+  @media (min-width: 768px) {
+    .collections {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .collections {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
