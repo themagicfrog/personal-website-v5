@@ -85,6 +85,8 @@ const events = defineCollection({
     ...base,
     attendance: z.number().optional(),
     eventType: z.string().optional(),
+    repository: z.string().url().optional(),
+    demo: z.string().url().optional(),
   }),
 });
 

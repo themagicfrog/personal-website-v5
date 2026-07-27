@@ -11,7 +11,7 @@ const data = entry.rawEntry.data;
 const links = [
   data.demo ? { label: 'Live Demo', href: data.demo } : null,
   data.repository ? { label: 'Repository', href: data.repository } : null,
-  data.link && data.link !== data.demo ? { label: 'External Link', href: data.link } : null,
+  data.link && data.link !== data.demo ? { label: 'See More', href: data.link } : null,
 ].filter((link): link is { label: string; href: string } => link !== null);
 ---
 

@@ -8,7 +8,7 @@ const { entry } = Astro.props;
 const { Content } = await getEntryDetail(entry);
 
 const data = entry.rawEntry.data;
-const links = [data.link ? { label: 'External Link', href: data.link } : null].filter(
+const links = [data.link ? { label: 'See More', href: data.link } : null].filter(
   (link): link is { label: string; href: string } => link !== null
 );
 ---

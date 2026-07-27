@@ -10,7 +10,7 @@ const { Content } = await getEntryDetail(entry);
 
 const data = entry.rawEntry.data;
 const links = [
-  data.link ? { label: data.publication ?? 'External Link', href: data.link } : null,
+  data.link ? { label: data.publication ?? 'See More', href: data.link } : null,
 ].filter((link): link is { label: string; href: string } => link !== null);
 ---
 

@@ -6,7 +6,7 @@ import { getPublishedCollection, DEPARTMENT_LABEL, type Department } from '../li
 
 const titleLetters = 'estella gu'.split('');
 
-const SHOW_HERO_PHOTOS = false;
+const SHOW_HERO_PHOTOS = true;
 
 const departments = site.navigation.map((item) => ({
   ...item,
@@ -83,7 +83,7 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
       )}
       <div class="bio-text">
         <p class="subtitle">
-          i'm a high school student who loves creating and leading projects
+          i'm a high school student who loves to create and lead projects
           <br />
           that bring art, technology, and people together.
         </p>
@@ -190,6 +190,14 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
         const printCenterX = printRect.left + printRect.width / 2;
         print.style.setProperty('--start-x', `${rowCenterX - printCenterX}px`);
         print.style.setProperty('--enter-delay', `${i * 90}ms`);
+      });
+
+      prints.forEach((print) => {
+        print.addEventListener('animationend', (event) => {
+          if (event.animationName === 'photo-enter') {
+            print.classList.remove('photo-enter-play');
+          }
+        });
       });
 
       requestAnimationFrame(() => {
@@ -384,6 +392,7 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
 
   .photo-print {
     position: relative;
+    z-index: 2;
     flex: 1 1 0;
     min-width: 0;
     background: none;
@@ -392,7 +401,9 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     transform: translateY(var(--rest-ty, 0px)) rotate(var(--rest-rot, 0deg));
-    transition: transform 350ms var(--ease-standard), opacity 350ms var(--ease-standard);
+    filter: brightness(1);
+    transition: transform 350ms var(--ease-standard), opacity 350ms var(--ease-standard),
+      filter 350ms var(--ease-standard);
   }
 
   .photo-print.photo-enter-init {
@@ -430,7 +441,8 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
   .photo-print:hover,
   .photo-print:focus-visible,
   .photo-print.is-selected {
-    transform: scale(1.08) translateY(-6px) rotate(0deg);
+    transform: scale(1.05) translateY(-4px) rotate(0deg);
+    filter: brightness(1.06);
     z-index: 5;
   }
 

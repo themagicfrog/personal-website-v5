@@ -160,9 +160,21 @@ const label = DEPARTMENT_LABEL[department];
 
   .gallery {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-5);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
     padding-bottom: var(--space-7);
+  }
+
+  @media (min-width: 640px) {
+    .gallery {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .gallery {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 
   .gallery.contact-sheet {
@@ -226,9 +238,4 @@ const label = DEPARTMENT_LABEL[department];
     transform: scale(1.05) rotate(-1deg);
   }
 
-  @media (min-width: 768px) {
-    .gallery {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
 </style>
