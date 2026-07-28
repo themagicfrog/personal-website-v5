@@ -4,7 +4,7 @@ date: 2024-12
 description: a handmade book
 coverImage: /images/art/trail/3.png
 images:
-  - /images/art/trail/1.png
+  - /images/art/trail/trail-book-cover.png
   - /images/art/trail/2.png
   - /images/art/trail/3.png
   - /images/art/trail/4.png

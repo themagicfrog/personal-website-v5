@@ -87,7 +87,7 @@ export const site: SiteData = {
       href: '/events',
       accent: 'var(--events)',
       description: 'I organize and take part in programs, workshops, and creative communities.',
-      tagline: 'programs, workshops & creative collaborations',
+      tagline: 'programs, workshops, communities & shared making',
     },
   ],
 

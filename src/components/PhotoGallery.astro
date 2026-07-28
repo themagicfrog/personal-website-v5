@@ -179,7 +179,7 @@ const photos = entries.map((entry) => ({
   }
 
   .photo-recognition {
-    color: var(--accent);
+    color: color-mix(in srgb, var(--recognition) 80%, white 20%);
   }
 
   .lightbox {
@@ -261,7 +261,7 @@ const photos = entries.map((entry) => ({
   }
 
   .lightbox-recognition {
-    color: var(--accent);
+    color: color-mix(in srgb, var(--recognition) 80%, white 20%);
   }
 
   .lightbox-control {
@@ -270,16 +270,20 @@ const photos = entries.map((entry) => ({
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1.5px solid rgba(255, 255, 255, 0.4);
-    color: #fff;
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    border: 2px solid var(--accent);
+    background-color: color-mix(in srgb, var(--accent) 14%, var(--paper-light));
+    box-shadow: 2px 2px 0 -1px var(--paper), 3px 3px 0 -1px var(--accent);
+    color: var(--ink);
     cursor: pointer;
-    transition: background 0.2s var(--ease-standard), transform 0.2s var(--ease-standard);
+    transition: background-color 0.2s var(--ease-standard), color 0.2s var(--ease-standard),
+      transform 0.2s var(--ease-standard);
   }
 
   .lightbox-control:hover,
   .lightbox-control:focus-visible {
-    background: rgba(255, 255, 255, 0.22);
+    background-color: var(--accent);
+    color: var(--paper-light);
   }
 
   .lightbox-close {
@@ -287,8 +291,13 @@ const photos = entries.map((entry) => ({
     right: var(--space-5);
     width: 2.75rem;
     height: 2.75rem;
-    border-radius: 50%;
     font-size: 1.1rem;
+    transform: rotate(-4deg);
+  }
+
+  .lightbox-close:hover,
+  .lightbox-close:focus-visible {
+    transform: rotate(-4deg) scale(1.08);
   }
 
   .lightbox-prev,
@@ -296,27 +305,27 @@ const photos = entries.map((entry) => ({
     top: 50%;
     width: 3.25rem;
     height: 3.25rem;
-    border-radius: 50%;
     font-size: 1.75rem;
-    transform: translateY(-50%);
-  }
-
-  .lightbox-prev:hover,
-  .lightbox-prev:focus-visible {
-    transform: translateY(-50%) translateX(-2px);
-  }
-
-  .lightbox-next:hover,
-  .lightbox-next:focus-visible {
-    transform: translateY(-50%) translateX(2px);
   }
 
   .lightbox-prev {
     left: var(--space-5);
+    transform: translateY(-50%) rotate(3deg);
   }
 
   .lightbox-next {
     right: var(--space-5);
+    transform: translateY(-50%) rotate(-3deg);
+  }
+
+  .lightbox-prev:hover,
+  .lightbox-prev:focus-visible {
+    transform: translateY(-50%) rotate(3deg) translateX(-2px);
+  }
+
+  .lightbox-next:hover,
+  .lightbox-next:focus-visible {
+    transform: translateY(-50%) rotate(-3deg) translateX(2px);
   }
 
   @media (max-width: 640px) {
@@ -393,9 +402,18 @@ const photos = entries.map((entry) => ({
 
     document.addEventListener('keydown', (event) => {
       if (lightbox!.hidden) return;
-      if (event.key === 'Escape') close();
-      if (event.key === 'ArrowLeft') step(-1);
-      if (event.key === 'ArrowRight') step(1);
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        close();
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        step(-1);
+      }
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        step(1);
+      }
     });
 
     function openBySlug(slug: string) {

@@ -1,6 +1,6 @@
 ---
 title: Celestial
-date: 2025-04
+date: 2024-10
 description: a one-day girls hackathon in Shopify Toronto
 coverImage: /images/events/celestial/celestial-cover.png
 images:
