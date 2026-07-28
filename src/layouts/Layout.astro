@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
+import DeptNav from '../components/DeptNav.astro';
 import { site } from '../data/site';
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
   section?: string;
   articleType?: 'website' | 'article';
   hideHeader?: boolean;
+  miniNav?: boolean;
 }
 
 const {
@@ -19,6 +21,7 @@ const {
   section,
   articleType = 'website',
   hideHeader = false,
+  miniNav = false,
 } = Astro.props;
 
 const pageTitle = title === site.title ? title : `${title} — ${site.title}`;
@@ -55,6 +58,7 @@ const ogImageURL = Astro.site ? new URL(image, Astro.site) : image;
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
     {!hideHeader && <SiteHeader activeHref={section} />}
+    {miniNav && <DeptNav activeHref={section} />}
     <main id="main">
       <slot />
     </main>

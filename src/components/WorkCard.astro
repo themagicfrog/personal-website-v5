@@ -2,6 +2,7 @@
 import { DEPARTMENT_LABEL, DEPARTMENT_LABEL_SINGULAR, entryData, type NormalizedEntry } from '../lib/content';
 import { formatYearRange } from '../lib/format';
 import { accentForDepartment } from '../data/site';
+import { getImageAspectRatio } from '../lib/image';
 import ImageWithCaption from './ImageWithCaption.astro';
 import MetaLine from './MetaLine.astro';
 
@@ -14,14 +15,18 @@ const { entry, showCta = true } = Astro.props;
 const accent = accentForDepartment(entry.department);
 const extra = entryData(entry);
 const typeLine = entry.rawEntry.data.medium ?? (extra.genre as string | undefined) ?? (extra.eventType as string | undefined) ?? entry.status;
+const aspectRatio =
+  entry.rawEntry.data.aspectRatio ??
+  (entry.department === 'photography' ? getImageAspectRatio(entry.coverImage) : '4 / 3');
+const href = entry.department === 'photography' ? `/photography#${entry.slug}` : entry.href;
 ---
 
 <article class="work-card" style={`--accent: ${accent}`}>
-  <a href={entry.href} class="card-link">
+  <a href={href} class="card-link">
     <ImageWithCaption
       src={entry.coverImage}
       alt={entry.title}
-      aspectRatio="4 / 3"
+      aspectRatio={aspectRatio}
       accent={accent}
       placeholderKicker={`${DEPARTMENT_LABEL[entry.department]} / ${formatYearRange(entry.date, entry.endDate)}`}
       placeholderTitle={entry.title}
@@ -32,7 +37,7 @@ const typeLine = entry.rawEntry.data.medium ?? (extra.genre as string | undefine
         <span class="title-text">{entry.title}</span>
         <span class="hover-arrow" aria-hidden="true">→</span>
       </h3>
-      <p class="summary">{entry.description}</p>
+      {entry.department !== 'photography' && <p class="summary">{entry.description}</p>}
       <MetaLine items={[typeLine]} />
       {entry.recognition && (
         <span class="recognition-badge">

@@ -23,6 +23,7 @@ const base = {
   description: z.string(),
   coverImage: z.string().optional(),
   images: z.array(z.string()).default([]),
+  aspectRatio: z.string().optional(),
   link: z.string().url().optional(),
   featured: z.boolean().default(false),
   featuredOrder: z.number().optional(),

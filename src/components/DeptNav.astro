@@ -1,0 +1,123 @@
+---
+import { site, accentForDepartment } from '../data/site';
+
+interface Props {
+  activeHref?: string;
+}
+
+const { activeHref } = Astro.props;
+
+const links = [
+  { label: 'Home', href: '/', accent: 'var(--ink)' },
+  ...site.navigation.map((item) => ({
+    label: item.label,
+    href: item.href,
+    accent: accentForDepartment(item.href.slice(1)),
+  })),
+];
+---
+
+<nav class="dept-nav wrap" aria-label="Departments">
+  <ul>
+    {links.map((link) => (
+      <li>
+        <a
+          href={link.href}
+          class="dept-nav-link"
+          aria-current={link.href === activeHref ? 'page' : undefined}
+          style={`color: ${link.accent}`}
+        >
+          {link.label.split('').map((char) =>
+            char === ' ' ? (
+              ' '
+            ) : (
+              <span class="dept-nav-letter">{char}</span>
+            )
+          )}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .dept-nav {
+    padding-block: var(--space-4) var(--space-3);
+    text-align: center;
+  }
+
+  .dept-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2) var(--space-5);
+  }
+
+  .dept-nav-link {
+    display: inline-flex;
+    text-decoration: none;
+    transition: transform 0.2s var(--ease-standard), filter 0.2s var(--ease-standard);
+  }
+
+  .dept-nav-link:hover,
+  .dept-nav-link:focus-visible {
+    transform: scale(1.12);
+    filter: brightness(0.75);
+  }
+
+  .dept-nav-link:active {
+    transform: scale(0.92);
+    filter: brightness(0.85);
+  }
+
+  .dept-nav-letter {
+    display: inline-block;
+    cursor: default;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1rem, 1.8vw, 1.35rem);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  .dept-nav-letter.wiggling {
+    animation: dept-nav-letter-wiggle 0.4s ease;
+  }
+
+  @keyframes dept-nav-letter-wiggle {
+    0% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(-9deg);
+    }
+    55% {
+      transform: rotate(7deg);
+    }
+    80% {
+      transform: rotate(-4deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.dept-nav-letter').forEach((el) => {
+    el.addEventListener('animationend', (event) => {
+      if (event.animationName === 'dept-nav-letter-wiggle') {
+        el.classList.remove('wiggling');
+      }
+    });
+
+    el.addEventListener('mouseenter', () => {
+      if (!el.classList.contains('wiggling')) {
+        el.classList.add('wiggling');
+      }
+    });
+  });
+</script>

@@ -16,6 +16,8 @@ const accent = accentForDepartment('events');
   title="Events"
   description="Programs, workshops, collaborations, exhibitions, and community projects."
   section="/events"
+  hideHeader
+  miniNav
 >
   <SectionHero
     title="Events"
@@ -33,7 +35,7 @@ const accent = accentForDepartment('events');
             <ImageWithCaption
               src={entry.coverImage}
               alt={entry.title}
-              aspectRatio="3 / 4"
+              aspectRatio="4 / 3"
               accent={accent}
               placeholderKicker="Events"
               placeholderTitle={entry.title}
@@ -41,6 +43,7 @@ const accent = accentForDepartment('events');
             />
             <span class="dispatch-date meta">{formatDateShort(entry.date)}</span>
             <span class="dispatch-title">{entry.title}</span>
+            <p class="dispatch-summary">{entry.description}</p>
             <MetaLine items={[entry.rawEntry.data.location, entry.rawEntry.data.role]} />
           </a>
         ))}
@@ -74,6 +77,14 @@ const accent = accentForDepartment('events');
     font-family: var(--font-display);
     font-size: 1.6rem;
     margin-top: var(--space-1);
+  }
+
+  .dispatch-summary {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    margin-top: var(--space-2);
   }
 
   @media (min-width: 768px) {

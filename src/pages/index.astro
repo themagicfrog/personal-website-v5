@@ -41,63 +41,78 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
 ---
 
 <Layout title={site.title} description="Estella Gu — builds, art, photography, writing, and events from a Massachusetts high schooler exploring technology and creativity" hideHeader>
-  <section class="hero" id="top">
-    <h1>
-      <span class="visually-hidden">estella gu</span>
-      <span class="letters" aria-hidden="true">
-        {titleLetters.map((char, i) =>
-          char === ' ' ? (
-            ' '
-          ) : (
-            <span class="letter title-texture" style={`animation-delay: ${i * 0.14}s`}>
-              {char}
-            </span>
-          )
-        )}
-      </span>
-    </h1>
-  </section>
+  <section class="hero-page" id="top">
+    <div class="hero">
+      <h1>
+        <span class="visually-hidden">estella gu</span>
+        <span class="letters" aria-hidden="true">
+          {titleLetters.map((char, i) =>
+            char === ' ' ? (
+              ' '
+            ) : (
+              <span class="letter title-texture" style={`animation-delay: ${i * 0.1}s`}>
+                {char}
+              </span>
+            )
+          )}
+        </span>
+      </h1>
+    </div>
 
-  <section class="bio wrap">
-    <div class="bio-layout">
-      {SHOW_HERO_PHOTOS && (
-        <div class="photo-row-slot">
-          <div class="photo-row" data-photo-row aria-label="Photos of Estella">
-            <button type="button" class="photo-print" data-photo-print style="--rest-rot: -1deg; --rest-ty: 3px;">
-              <img src="/images/home/photo-3.jpg" alt="" loading="eager" />
-            </button>
-            <button type="button" class="photo-print" data-photo-print style="--rest-rot: 1.3deg; --rest-ty: -3px;">
-              <img src="/images/home/photo-7.jpg" alt="" loading="eager" />
-            </button>
-            <button type="button" class="photo-print" data-photo-print style="--rest-rot: -0.8deg; --rest-ty: 4px;">
-              <img src="/images/home/photo-1.jpg" alt="" loading="eager" />
-            </button>
-            <button type="button" class="photo-print" data-photo-print style="--rest-rot: 1.1deg; --rest-ty: -2px;">
-              <img src="/images/home/photo-8.jpeg" alt="" loading="lazy" />
-            </button>
-            <button type="button" class="photo-print" data-photo-print style="--rest-rot: -1.4deg; --rest-ty: 3px;">
-              <img src="/images/home/photo-4.jpg" alt="" loading="lazy" />
-            </button>
+    <div class="bio wrap">
+      <div class="bio-layout">
+        {SHOW_HERO_PHOTOS && (
+          <div class="photo-row-slot">
+            <div class="photo-row" data-photo-row aria-label="Photos of Estella">
+              <button type="button" class="photo-print" data-photo-print style="--rest-rot: -1.2deg; --rest-ty: -5px;">
+                <img src="/images/home/photo-3.jpg" alt="" loading="eager" />
+              </button>
+              <button type="button" class="photo-print" data-photo-print style="--rest-rot: 1.6deg; --rest-ty: 4px;">
+                <img src="/images/home/photo-7.jpg" alt="" loading="eager" />
+              </button>
+              <button type="button" class="photo-print" data-photo-print style="--rest-rot: -0.6deg; --rest-ty: -3px;">
+                <img src="/images/home/photo-1.jpg" alt="" loading="eager" />
+              </button>
+              <button type="button" class="photo-print" data-photo-print style="--rest-rot: 1.1deg; --rest-ty: 5px;">
+                <img src="/images/home/photo-4.jpg" alt="" loading="lazy" />
+              </button>
+              <button type="button" class="photo-print" data-photo-print style="--rest-rot: -1.7deg; --rest-ty: -4px;">
+                <img src="/images/home/photo-8.jpeg" alt="" loading="lazy" />
+              </button>
+            </div>
           </div>
+        )}
+        <div class="bio-text">
+          <p class="subtitle">
+            i'm a high school student who creates and leads projects
+            <br />
+            that bring technology, art, and people together.
+          </p>
+          <p class="subtitle">
+            my work spans creative coding, hardware, visual art,
+            <br />
+            writing, photography, and community programs.
+          </p>
         </div>
-      )}
-      <div class="bio-text">
-        <p class="subtitle">
-          i'm a high school student who loves to create and lead projects
-          <br />
-          that bring art, technology, and people together.
-        </p>
-        <p class="subtitle subtitle-second">
-          my work spans creative coding, hardware, visual art,
-          <br />
-          writing, photography, and community programs.
-        </p>
       </div>
     </div>
+
+    <button type="button" class="scroll-cue" data-scroll-cue aria-label="Scroll to explore">
+      <span class="scroll-cue-label">scroll</span>
+      <svg viewBox="0 0 24 26" fill="none" aria-hidden="true">
+        <path
+          d="M12 2c-1 4.5 1.2 8.8 0.3 13.5M6 15c1.7 2.6 3.8 5 6 7.3 2.2-2.3 4.3-4.7 6-7.3"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
   </section>
 
   {featuredByDepartment.map(
-    ({ href, label, accent, tagline, entries }) =>
+    ({ department, href, label, accent, tagline, entries }) =>
       entries.length > 0 && (
         <section class="featured">
           <div class="featured-head wrap">
@@ -107,7 +122,13 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
             </div>
             <a href={href} class="see-all" style={`color: ${accent}`}>see all {label.toLowerCase()} →</a>
           </div>
-          <WorkGrid entries={entries} emptyMessage="" accent={accent} showCta={false} />
+          <WorkGrid
+            entries={entries}
+            emptyMessage=""
+            accent={accent}
+            showCta={false}
+            layout={department === 'photography' ? 'row' : 'grid'}
+          />
         </section>
       )
   )}
@@ -230,15 +251,62 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-scroll-cue]').forEach((button) => {
+    button.addEventListener('click', () => {
+      document.querySelector('.featured')?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
 </script>
 
 <style>
+  .hero-page {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding-block: var(--space-7);
+  }
+
+  .scroll-cue {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    background: none;
+    border: none;
+    color: var(--ink);
+    cursor: pointer;
+    animation: bio-fade-up 650ms var(--ease-standard) both;
+    animation-delay: 600ms;
+  }
+
+  .scroll-cue:hover,
+  .scroll-cue:focus-visible {
+    opacity: 0.7;
+  }
+
+  .scroll-cue-label {
+    font-family: var(--font-label);
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    transform: rotate(-2deg);
+  }
+
+  .scroll-cue svg {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
   .hero {
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding-block: var(--space-5) 0;
     animation: hero-shake 0.6s ease-out;
   }
 
@@ -329,10 +397,6 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
     }
   }
 
-  .bio {
-    padding-block: 0 var(--space-6);
-  }
-
   .bio-layout {
     display: flex;
     flex-direction: column;
@@ -355,8 +419,8 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
     animation-delay: 250ms;
   }
 
-  .subtitle-second {
-    margin-top: var(--space-3);
+  .subtitle + .subtitle {
+    margin-top: var(--space-5);
     animation-delay: 400ms;
   }
 
@@ -387,7 +451,7 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
     width: 100%;
     max-width: 1000px;
     min-width: 0;
-    padding-block: var(--space-2);
+    padding-block: var(--space-1);
   }
 
   .photo-print {
@@ -441,7 +505,7 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
   .photo-print:hover,
   .photo-print:focus-visible,
   .photo-print.is-selected {
-    transform: scale(1.05) translateY(-4px) rotate(0deg);
+    transform: scale(1.1) translateY(-4px) rotate(0deg);
     filter: brightness(1.06);
     z-index: 5;
   }

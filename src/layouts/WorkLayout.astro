@@ -2,8 +2,8 @@
 import { DEPARTMENT_LABEL, type NormalizedEntry, type Department } from '../lib/content';
 import { formatDateRange } from '../lib/format';
 import { accentForDepartment } from '../data/site';
+import { getImageAspectRatio } from '../lib/image';
 import Layout from './Layout.astro';
-import Breadcrumbs from '../components/Breadcrumbs.astro';
 import MetaLine from '../components/MetaLine.astro';
 import TagList from '../components/TagList.astro';
 import ImageWithCaption from '../components/ImageWithCaption.astro';
@@ -25,14 +25,25 @@ const { entry, department, metaItems = [], links = [], galleryLayout = 'grid' } 
 const contactSheetRatios = ['3 / 4', '4 / 3', '1 / 1', '4 / 5'];
 const accent = accentForDepartment(department);
 const label = DEPARTMENT_LABEL[department];
+const galleryColumns = entry.images.length > 6 ? 4 : 3;
+const heroAspectRatio =
+  entry.rawEntry.data.aspectRatio ?? (department === 'photography' ? getImageAspectRatio(entry.coverImage) : '4 / 3');
 ---
 
-<Layout title={entry.title} description={entry.description} image={entry.coverImage} section={`/${department}`} articleType="article">
+<Layout title={entry.title} description={entry.description} image={entry.coverImage} section={`/${department}`} articleType="article" hideHeader miniNav>
   <article class="work-detail" style={`--accent: ${accent}`}>
     <header class="wrap detail-head">
-      <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label, href: `/${department}` }, { label: entry.title }]} />
-      <h1 class="title-texture">{entry.title}</h1>
-      <p class="summary">{entry.description}</p>
+      <div class="title-row">
+        <h1 class="title-texture">{entry.title}</h1>
+        {links.length > 0 && (
+          <ul class="external-links">
+            {links.map((link) => (
+              <li><a href={link.href}>{link.label} →</a></li>
+            ))}
+          </ul>
+        )}
+      </div>
+      {department !== 'photography' && <p class="summary">{entry.description}</p>}
       {entry.recognition && (
         <span class="recognition-badge">
           <span class="badge-mark" aria-hidden="true"></span>
@@ -43,25 +54,26 @@ const label = DEPARTMENT_LABEL[department];
       {entry.tags.length > 0 && <TagList tags={entry.tags} />}
     </header>
 
-    <div class="wrap hero-media">
-      <ImageWithCaption
-        src={entry.coverImage}
-        alt={entry.title}
-        aspectRatio="16 / 9"
-        accent={accent}
-        placeholderKicker={label}
-        placeholderTitle={entry.title}
-        placeholderMeta={entry.archiveCode}
-        loading="eager"
-      />
-    </div>
-
-    <div class="wrap reading-column body">
-      <slot />
+    <div class="wrap hero-body-row">
+      <div class="hero-media-float">
+        <ImageWithCaption
+          src={entry.coverImage}
+          alt={entry.title}
+          aspectRatio={heroAspectRatio}
+          accent={accent}
+          placeholderKicker={label}
+          placeholderTitle={entry.title}
+          placeholderMeta={entry.archiveCode}
+          loading="eager"
+        />
+      </div>
+      <div class="body">
+        <slot />
+      </div>
     </div>
 
     {entry.images.length > 0 && (
-      <div class:list={['wrap gallery', { 'contact-sheet': galleryLayout === 'contact-sheet' }]}>
+      <div class:list={['wrap gallery', { 'contact-sheet': galleryLayout === 'contact-sheet' }]} style={`--gallery-cols: ${galleryColumns}`}>
         {entry.images.map((src, i) => (
           <ImageWithCaption
             src={src}
@@ -70,16 +82,6 @@ const label = DEPARTMENT_LABEL[department];
             accent={accent}
           />
         ))}
-      </div>
-    )}
-
-    {links.length > 0 && (
-      <div class="wrap reading-column extras">
-        <ul class="external-links">
-          {links.map((link) => (
-            <li><a href={link.href}>{link.label} →</a></li>
-          ))}
-        </ul>
       </div>
     )}
 
@@ -115,11 +117,21 @@ const label = DEPARTMENT_LABEL[department];
     gap: var(--space-3);
   }
 
+  .title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
   h1 {
     font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(2.5rem, 6vw, 5rem);
     line-height: 1.35;
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .summary {
@@ -129,16 +141,35 @@ const label = DEPARTMENT_LABEL[department];
     max-width: 60ch;
   }
 
-  .hero-media {
-    max-width: 900px;
-    margin-inline: auto;
+  .hero-body-row {
+    padding-inline: clamp(1.25rem, 3.5vw, 3.25rem);
     padding-bottom: var(--space-7);
+  }
+
+  .hero-body-row::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  .hero-media-float {
+    float: left;
+    width: 42%;
+    margin-right: var(--space-6);
+    margin-bottom: var(--space-4);
   }
 
   .body {
     font-size: 1.1rem;
     line-height: 1.65;
-    padding-bottom: var(--space-7);
+  }
+
+  @media (max-width: 640px) {
+    .hero-media-float {
+      float: none;
+      width: 100%;
+      margin-right: 0;
+    }
   }
 
   .body :global(p) {
@@ -162,6 +193,7 @@ const label = DEPARTMENT_LABEL[department];
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-4);
+    padding-inline: clamp(1.25rem, 3.5vw, 3.25rem);
     padding-bottom: var(--space-7);
   }
 
@@ -172,8 +204,8 @@ const label = DEPARTMENT_LABEL[department];
   }
 
   @media (min-width: 1024px) {
-    .gallery {
-      grid-template-columns: repeat(4, 1fr);
+    .gallery:not(.contact-sheet) {
+      grid-template-columns: repeat(var(--gallery-cols, 4), 1fr);
     }
   }
 
@@ -200,14 +232,11 @@ const label = DEPARTMENT_LABEL[department];
     }
   }
 
-  .extras {
-    padding-bottom: var(--space-7);
-  }
-
   .external-links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-5);
+    flex-shrink: 0;
+    gap: var(--space-4);
     list-style: none;
     margin: 0;
     padding: 0;

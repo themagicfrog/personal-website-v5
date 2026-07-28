@@ -1,7 +1,7 @@
 ---
-title: Models of Acoustic Architectural Spaces
+title: Acoustic Architecture Models
 date: 2026-07
-description: a study on space and sound with a ray-tracing simulator
+description: a study on space & sound with a ray-tracer
 coverImage: /images/builds/space-sound-cover.png
 link: https://community.wolfram.com/groups/-/m/t/3751941?p_p_auth=Mco1WiFu
 featured: true

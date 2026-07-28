@@ -8,16 +8,17 @@ interface Props {
   emptyMessage: string;
   accent: string;
   showCta?: boolean;
+  layout?: 'grid' | 'row';
 }
 
-const { entries, emptyMessage, accent, showCta = true } = Astro.props;
+const { entries, emptyMessage, accent, showCta = true, layout = 'grid' } = Astro.props;
 ---
 
 <div class="wrap">
   {entries.length === 0 ? (
     <EmptyState message={emptyMessage} accent={accent} />
   ) : (
-    <div class="grid">
+    <div class:list={['grid', { row: layout === 'row' }]}>
       {entries.map((entry) => <WorkCard entry={entry} showCta={showCta} />)}
     </div>
   )}
@@ -47,5 +48,26 @@ const { entries, emptyMessage, accent, showCta = true } = Astro.props;
     .grid {
       grid-template-columns: repeat(4, 1fr);
     }
+  }
+
+  .grid.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .grid.row :global(.work-card) {
+    width: auto;
+    flex: 0 1 auto;
+  }
+
+  .grid.row :global(.image-frame) {
+    width: auto;
+    height: clamp(200px, 24vw, 340px);
+  }
+
+  .grid.row :global(.image-frame img) {
+    width: auto;
+    height: 100%;
   }
 </style>

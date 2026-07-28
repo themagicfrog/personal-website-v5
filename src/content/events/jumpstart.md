@@ -6,6 +6,7 @@ coverImage: /images/events/jumpstart-cover.png
 repository: https://github.com/themagicfrog/jumpstart
 demo: https://v2.jumpstart.hackclub.com/games/
 featured: true
+featuredOrder: 1
 ---
 
 I ran Jumpstart V2 from July 9th to August 10th. Each Hack Clubber spent 20+ hours building a game to earn a game console to play it on! 
