@@ -2,7 +2,6 @@
 title: Jumpstart
 date: 2026-01
 description: a month-long game dev program
-coverImage: /images/events/jumpstart-cover.png
 repository: https://github.com/themagicfrog/jumpstart
 demo: https://v2.jumpstart.hackclub.com/games/
 featured: true

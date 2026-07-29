@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { imageSize } from 'image-size';
 
@@ -17,4 +17,45 @@ export function getImageAspectRatio(src: string | undefined, fallback = '4 / 3')
   } catch {
     return fallback;
   }
+}
+
+interface EntryImages {
+  coverImage?: string;
+  images: string[];
+}
+
+/**
+ * Auto-discovers an entry's cover and gallery images from public/images/<department>/<slug>/:
+ * a file named "cover.*" becomes the cover, and any "1.*", "2.*", ... become the gallery, in order.
+ */
+export function getEntryImages(department: string, slug: string): EntryImages {
+  const dir = join(process.cwd(), 'public', 'images', department, slug);
+
+  let files: string[];
+  try {
+    files = readdirSync(dir);
+  } catch {
+    return { coverImage: undefined, images: [] };
+  }
+
+  let coverImage: string | undefined;
+  const numbered: { n: number; file: string }[] = [];
+
+  for (const file of files) {
+    if (/^cover\.\w+$/i.test(file)) {
+      coverImage = `/images/${department}/${slug}/${file}`;
+      continue;
+    }
+    const match = /^(\d+)\.\w+$/.exec(file);
+    if (match) {
+      numbered.push({ n: Number(match[1]), file });
+    }
+  }
+
+  numbered.sort((a, b) => a.n - b.n);
+
+  return {
+    coverImage,
+    images: numbered.map(({ file }) => `/images/${department}/${slug}/${file}`),
+  };
 }

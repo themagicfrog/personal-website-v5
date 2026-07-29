@@ -14,9 +14,13 @@ interface Props {
 const { entry, showCta = true } = Astro.props;
 const accent = accentForDepartment(entry.department);
 const extra = entryData(entry);
-const typeLine = entry.rawEntry.data.medium ?? (extra.genre as string | undefined) ?? (extra.eventType as string | undefined) ?? entry.status;
+const typeLine =
+  (extra.medium as string | undefined) ??
+  (extra.genre as string | undefined) ??
+  (extra.eventType as string | undefined) ??
+  entry.status;
 const aspectRatio =
-  entry.rawEntry.data.aspectRatio ??
+  (extra.aspectRatio as string | undefined) ??
   (entry.department === 'photography' ? getImageAspectRatio(entry.coverImage) : '4 / 3');
 const href = entry.department === 'photography' ? `/photography#${entry.slug}` : entry.href;
 const previewImages = entry.images;
@@ -203,13 +207,16 @@ const previewImages = entry.images;
       previews.forEach((img) => img.classList.remove('is-active'));
     }
 
+    function advance() {
+      clearActive();
+      index = (index + 1) % previews.length;
+      previews[index].classList.add('is-active');
+    }
+
     media.addEventListener('mouseenter', () => {
       index = -1;
-      timer = setInterval(() => {
-        clearActive();
-        index = (index + 1) % previews.length;
-        previews[index].classList.add('is-active');
-      }, 900);
+      advance();
+      timer = setInterval(advance, 900);
     });
 
     media.addEventListener('mouseleave', () => {

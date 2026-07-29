@@ -3,10 +3,9 @@ import Layout from '../layouts/Layout.astro';
 import WorkGrid from '../components/WorkGrid.astro';
 import { site, accentForDepartment, taglineForDepartment } from '../data/site';
 import { getPublishedCollection, DEPARTMENT_LABEL, type Department } from '../lib/content';
+import { getPhotographyEntries } from '../lib/photography';
 
 const titleLetters = 'estella gu'.split('');
-
-const SHOW_HERO_PHOTOS = true;
 
 const departments = site.navigation.map((item) => ({
   ...item,
@@ -15,16 +14,24 @@ const departments = site.navigation.map((item) => ({
 
 const FEATURED_ORDER: Department[] = ['builds', 'art', 'photography', 'writing', 'events'];
 
+const FEATURED_PHOTOGRAPHY_SLUGS = ['under-a-thousand-stars', 'sunlit-thoughts--tangeled-fur', 'between-orders'];
+
 const featuredByDepartment = await Promise.all(
   FEATURED_ORDER.map(async (department) => {
-    const entries = (await getPublishedCollection(department))
-      .filter((entry) => entry.featured)
-      .sort((a, b) => {
-        const orderA = a.featuredOrder ?? Number.POSITIVE_INFINITY;
-        const orderB = b.featuredOrder ?? Number.POSITIVE_INFINITY;
-        if (orderA !== orderB) return orderA - orderB;
-        return b.date.getTime() - a.date.getTime();
-      });
+    let entries;
+    if (department === 'photography') {
+      const bySlug = new Map(getPhotographyEntries().map((entry) => [entry.slug, entry]));
+      entries = FEATURED_PHOTOGRAPHY_SLUGS.map((slug) => bySlug.get(slug)).filter((entry) => entry !== undefined);
+    } else {
+      entries = (await getPublishedCollection(department))
+        .filter((entry) => entry.featured)
+        .sort((a, b) => {
+          const orderA = a.featuredOrder ?? Number.POSITIVE_INFINITY;
+          const orderB = b.featuredOrder ?? Number.POSITIVE_INFINITY;
+          if (orderA !== orderB) return orderA - orderB;
+          return b.date.getTime() - a.date.getTime();
+        });
+    }
     return {
       department,
       href: `/${department}`,
@@ -40,7 +47,7 @@ const currentYear = new Date().getFullYear();
 const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 ---
 
-<Layout title={site.title} description="Estella Gu — builds, art, photography, writing, and events from a Massachusetts high schooler exploring technology and creativity" hideHeader>
+<Layout title={site.title} description="Estella Gu — builds, art, photography, writing, and events from a Massachusetts high schooler exploring technology and creativity">
   <section class="hero-page" id="top">
     <div class="hero">
       <h1>
@@ -61,36 +68,34 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
 
     <div class="bio wrap">
       <div class="bio-layout">
-        {SHOW_HERO_PHOTOS && (
-          <div class="photo-row-slot">
-            <div class="photo-row" data-photo-row aria-label="Photos of Estella">
-              <button type="button" class="photo-print" data-photo-print style="--rest-rot: -1.2deg; --rest-ty: -5px;">
-                <img src="/images/home/photo-3.jpg" alt="" loading="eager" />
-              </button>
-              <button type="button" class="photo-print" data-photo-print style="--rest-rot: 1.6deg; --rest-ty: 4px;">
-                <img src="/images/home/photo-7.jpg" alt="" loading="eager" />
-              </button>
-              <button type="button" class="photo-print" data-photo-print style="--rest-rot: -0.6deg; --rest-ty: -3px;">
-                <img src="/images/home/photo-1.jpg" alt="" loading="eager" />
-              </button>
-              <button type="button" class="photo-print" data-photo-print style="--rest-rot: 1.1deg; --rest-ty: 5px;">
-                <img src="/images/home/photo-4.jpg" alt="" loading="lazy" />
-              </button>
-              <button type="button" class="photo-print" data-photo-print style="--rest-rot: -1.7deg; --rest-ty: -4px;">
-                <img src="/images/home/photo-8.jpeg" alt="" loading="lazy" />
-              </button>
-            </div>
+        <div class="photo-row-slot">
+          <div class="photo-row" data-photo-row aria-label="Photos of Estella">
+            <button type="button" class="photo-print" data-photo-print style="--rest-rot: -1.2deg; --rest-ty: -5px;">
+              <img src="/images/home/photo-3.webp" alt="" loading="eager" />
+            </button>
+            <button type="button" class="photo-print" data-photo-print style="--rest-rot: 1.6deg; --rest-ty: 4px;">
+              <img src="/images/home/photo-7.webp" alt="" loading="eager" />
+            </button>
+            <button type="button" class="photo-print" data-photo-print style="--rest-rot: -0.6deg; --rest-ty: -3px;">
+              <img src="/images/home/photo-1.webp" alt="" loading="eager" />
+            </button>
+            <button type="button" class="photo-print" data-photo-print style="--rest-rot: 1.1deg; --rest-ty: 5px;">
+              <img src="/images/home/photo-4.webp" alt="" loading="lazy" />
+            </button>
+            <button type="button" class="photo-print" data-photo-print style="--rest-rot: -1.7deg; --rest-ty: -4px;">
+              <img src="/images/home/photo-8.webp" alt="" loading="lazy" />
+            </button>
           </div>
-        )}
+        </div>
         <div class="bio-text">
           <p class="subtitle">
-            i'm a high school student who creates and leads projects
-            <br />
+            i'm a high school student who creates and leads projects{' '}
+            <br class="subtitle-break" />
             that bring technology, art, and people together.
           </p>
           <p class="subtitle">
-            my work spans creative coding, hardware, visual art,
-            <br />
+            my work spans creative coding, hardware, visual art,{' '}
+            <br class="subtitle-break" />
             writing, photography, and community programs.
           </p>
         </div>
@@ -517,6 +522,10 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
   }
 
   @media (max-width: 767px) {
+    .subtitle-break {
+      display: none;
+    }
+
     .photo-row {
       overflow-x: auto;
       overflow-y: hidden;

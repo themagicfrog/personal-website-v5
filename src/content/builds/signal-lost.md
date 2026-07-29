@@ -2,7 +2,6 @@
 title: Signal Lost
 date: 2025-04
 description: a 2D space platformer game
-coverImage: /images/builds/signal-lost-cover.png
 repository: https://github.com/themagicfrog/signalLost
 demo: https://themagicfrog.itch.io/signal-lost
 featured: true

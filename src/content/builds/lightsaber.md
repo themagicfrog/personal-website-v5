@@ -2,7 +2,6 @@
 title: Lightsaber
 date: 2024-08
 description: a motion-controlled color-changing circuit lightsaber
-coverImage: /images/builds/lightsaber-cover.png
 repository: https://github.com/themagicfrog/lightsaber
 demo: https://www.youtube.com/watch?v=aVmNQV3bQB4
 ---

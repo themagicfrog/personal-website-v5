@@ -2,7 +2,6 @@
 title: Our Simulated World
 date: 2024-05
 description: an essay about our world
-coverImage: /images/writing/simulated-world-cover.png
 featured: true
 link: https://docs.google.com/document/d/1hMr8EGQUKd4gtr4lRPPSJMYIVkNYvaMlh-ksy1l2-TA/edit?usp=sharing
 ---

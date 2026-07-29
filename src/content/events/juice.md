@@ -2,7 +2,6 @@
 title: Juice
 date: 2025-04
 description: a pop-up game cafe in Shanghai
-coverImage: /images/events/juice/juice-cover.jpg
 link: https://youtu.be/fuTlToZ1SX8?si=uv9Caw3MMtkqSJRX
 demo: https://juice.hackclub.com/
 featured: true

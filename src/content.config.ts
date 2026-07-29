@@ -21,8 +21,6 @@ const base = {
   date: flexibleDate(),
   endDate: flexibleDate().optional(),
   description: z.string(),
-  coverImage: z.string().optional(),
-  images: z.array(z.string()).default([]),
   aspectRatio: z.string().optional(),
   link: z.string().url().optional(),
   featured: z.boolean().default(false),
@@ -59,16 +57,6 @@ const art = defineCollection({
   }),
 });
 
-const photography = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/photography' }),
-  schema: z.object({
-    ...base,
-    photoCount: z.number().optional(),
-    camera: z.string().optional(),
-    themes: z.array(z.string()).default([]),
-  }),
-});
-
 const writing = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/writing' }),
   schema: z.object({
@@ -91,4 +79,4 @@ const events = defineCollection({
   }),
 });
 
-export const collections = { builds, art, photography, writing, events };
+export const collections = { builds, art, writing, events };

@@ -2,16 +2,6 @@
 title: Bean Furniture
 date: 2026-05
 description: a real-life bean-themed furniture set
-coverImage: /images/art/bean/bean-furniture-cover.jpg
-images:
-  - /images/art/bean/1.jpg
-  - /images/art/bean/2.jpg
-  - /images/art/bean/3.jpg
-  - /images/art/bean/4.jpg
-  - /images/art/bean/5.jpg
-  - /images/art/bean/6.jpg
-  - /images/art/bean/7.jpg
-  - /images/art/bean/8.jpg
 featured: true
 featuredOrder: 3
 ---

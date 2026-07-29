@@ -2,7 +2,6 @@
 title: Face Down
 date: 2025-10
 description: a fantasy short story
-coverImage: /images/writing/face-down-cover.png
 featured: true
 recognition: Grubstreet Teen Writing Fellowship
 link: https://docs.google.com/document/d/1ouSxG8XvtgT3jlNa9lJ181wvJRAF5o-yac6rsb9GQRk/edit?usp=sharing

@@ -13,10 +13,10 @@ function departmentCode(department: Department): string {
 }
 
 export function formatDateShort(date: Date): string {
-  return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }).toUpperCase();
+  return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 }
 
-export function formatDateFull(date: Date, hasDay = true): string {
+function formatDateFull(date: Date, hasDay = true): string {
   if (!hasDay) {
     return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
   }
@@ -36,7 +36,7 @@ export function formatDateRange(date: Date, endDate?: Date, hasDay = true): stri
   return `${startMonth} ${startYear}`;
 }
 
-export function formatYear(date: Date): string {
+function formatYear(date: Date): string {
   return String(date.getUTCFullYear());
 }
 

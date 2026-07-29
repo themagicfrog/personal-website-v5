@@ -2,13 +2,6 @@
 title: The Trail Book
 date: 2024-12
 description: a handmade book
-coverImage: /images/art/trail/3.png
-images:
-  - /images/art/trail/trail-book-cover.png
-  - /images/art/trail/2.png
-  - /images/art/trail/3.png
-  - /images/art/trail/4.png
-  - /images/art/trail/5.png
 featured: true
 featuredOrder: 2
 recognition: Scholastic Expanded Art Gold Key

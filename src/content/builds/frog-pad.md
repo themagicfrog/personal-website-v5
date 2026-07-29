@@ -2,7 +2,6 @@
 title: Frog Pad
 date: 2025-04
 description: a frog-themed printed circuit board macropad
-coverImage: /images/builds/frogpad-cover.png
 repository: https://github.com/themagicfrog/frogpad
 featured: true
 featuredOrder: 3

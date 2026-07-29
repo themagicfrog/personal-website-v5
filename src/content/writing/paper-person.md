@@ -2,7 +2,6 @@
 title: Paper Person
 date: 2026-01
 description: a fantasy short story
-coverImage: /images/writing/paper-person-cover.png
 featured: true
 recognition: Scholastic Writing Gold Key and American Voices Nominee
 link: https://docs.google.com/document/d/1Y6fB_vSWyawucYXhelljakwTQ4108lc6YyVwJDNX-Ho/edit?usp=sharing

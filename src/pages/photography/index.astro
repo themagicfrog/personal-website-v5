@@ -2,10 +2,10 @@
 import Layout from '../../layouts/Layout.astro';
 import SectionHero from '../../components/SectionHero.astro';
 import PhotoGallery from '../../components/PhotoGallery.astro';
-import { getPublishedCollection, sortByDate } from '../../lib/content';
+import { getPhotographyEntries } from '../../lib/photography';
 import { accentForDepartment, descriptionForDepartment } from '../../data/site';
 
-const entries = sortByDate(await getPublishedCollection('photography'));
+const entries = getPhotographyEntries();
 const accent = accentForDepartment('photography');
 ---
 
@@ -13,7 +13,6 @@ const accent = accentForDepartment('photography');
   title="Photography"
   description="Street scenes, journeys, people, details, and visual collections."
   section="/photography"
-  hideHeader
   miniNav
 >
   <SectionHero

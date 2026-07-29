@@ -13,6 +13,5 @@ export default defineConfig({
   },
   redirects: {
     '/art/photography': '/photography',
-    '/art/photography/[slug]': '/photography/[slug]',
   },
 });

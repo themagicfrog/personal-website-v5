@@ -1,8 +1,7 @@
 ---
-import { DEPARTMENT_LABEL, type NormalizedEntry, type Department } from '../lib/content';
+import { DEPARTMENT_LABEL, type NormalizedEntry, type CollectionDepartment } from '../lib/content';
 import { formatDateRange } from '../lib/format';
 import { accentForDepartment } from '../data/site';
-import { getImageAspectRatio } from '../lib/image';
 import Layout from './Layout.astro';
 import MetaLine from '../components/MetaLine.astro';
 import TagList from '../components/TagList.astro';
@@ -14,8 +13,8 @@ interface ExternalLink {
 }
 
 interface Props {
-  entry: NormalizedEntry;
-  department: Department;
+  entry: NormalizedEntry<CollectionDepartment>;
+  department: CollectionDepartment;
   metaItems?: (string | undefined)[];
   links?: ExternalLink[];
   galleryLayout?: 'grid' | 'contact-sheet';
@@ -26,11 +25,10 @@ const contactSheetRatios = ['3 / 4', '4 / 3', '1 / 1', '4 / 5'];
 const accent = accentForDepartment(department);
 const label = DEPARTMENT_LABEL[department];
 const galleryColumns = entry.images.length > 6 ? 4 : 3;
-const heroAspectRatio =
-  entry.rawEntry.data.aspectRatio ?? (department === 'photography' ? getImageAspectRatio(entry.coverImage) : '4 / 3');
+const heroAspectRatio = entry.rawEntry.data.aspectRatio ?? '4 / 3';
 ---
 
-<Layout title={entry.title} description={entry.description} image={entry.coverImage} section={`/${department}`} articleType="article" hideHeader miniNav>
+<Layout title={entry.title} description={entry.description} image={entry.coverImage} section={`/${department}`} articleType="article" miniNav>
   <article class="work-detail" style={`--accent: ${accent}`}>
     <header class="wrap detail-head">
       <div class="title-row">
@@ -43,7 +41,7 @@ const heroAspectRatio =
           </ul>
         )}
       </div>
-      {department !== 'photography' && <p class="summary">{entry.description}</p>}
+      <p class="summary">{entry.description}</p>
       {entry.recognition && (
         <span class="recognition-badge">
           <span class="badge-mark" aria-hidden="true"></span>

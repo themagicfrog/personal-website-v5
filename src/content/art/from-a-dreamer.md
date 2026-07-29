@@ -2,13 +2,6 @@
 title: From a Dreamer
 date: 2026-02
 description: a multi-media piece
-coverImage: /images/art/from-a-dreamer/from-a-dreamer-cover.jpg
-images:
-  - /images/art/from-a-dreamer/2.jpg
-  - /images/art/from-a-dreamer/3.jpg
-  - /images/art/from-a-dreamer/4.jpg
-  - /images/art/from-a-dreamer/5.jpg
-  - /images/art/from-a-dreamer/6.jpg
 featured: true
 featuredOrder: 1
 ---

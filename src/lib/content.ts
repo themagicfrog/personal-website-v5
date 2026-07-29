@@ -1,7 +1,9 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { generateArchiveCode } from './format';
+import { getEntryImages } from './image';
 
 export type Department = 'builds' | 'art' | 'photography' | 'writing' | 'events';
+export type CollectionDepartment = Exclude<Department, 'photography'>;
 
 export const DEPARTMENT_LABEL: Record<Department, string> = {
   builds: 'Builds',
@@ -37,19 +39,20 @@ export interface NormalizedEntry<D extends Department = Department> {
   recognition?: string;
   archiveCode: string;
   href: string;
-  rawEntry: CollectionEntry<D>;
+  rawEntry: D extends CollectionDepartment ? CollectionEntry<D> : { data: Record<string, unknown> };
 }
 
 export function entryData(entry: NormalizedEntry): Record<string, unknown> {
   return entry.rawEntry.data as Record<string, unknown>;
 }
 
-function normalizeEntry<D extends Department>(
+function normalizeEntry<D extends CollectionDepartment>(
   entry: CollectionEntry<D>,
   department: D,
   archiveIndex: number
 ): NormalizedEntry<D> {
   const slug = entry.data.slugOverride ?? entry.id;
+  const { coverImage, images } = getEntryImages(department, slug);
   return {
     id: entry.id,
     slug,
@@ -59,8 +62,8 @@ function normalizeEntry<D extends Department>(
     dateHasDay: entry.data.date.hasDay,
     endDate: entry.data.endDate?.date,
     description: entry.data.description,
-    coverImage: entry.data.coverImage,
-    images: entry.data.images,
+    coverImage,
+    images,
     featured: entry.data.featured,
     featuredOrder: entry.data.featuredOrder,
     tags: entry.data.tags,
@@ -68,17 +71,19 @@ function normalizeEntry<D extends Department>(
     recognition: entry.data.recognition,
     archiveCode: entry.data.archiveCode ?? generateArchiveCode(department, archiveIndex),
     href: `/${department}/${slug}`,
-    rawEntry: entry,
+    rawEntry: entry as NormalizedEntry<D>['rawEntry'],
   };
 }
 
-export async function getPublishedCollection<D extends Department>(department: D): Promise<NormalizedEntry<D>[]> {
+export async function getPublishedCollection<D extends CollectionDepartment>(
+  department: D
+): Promise<NormalizedEntry<D>[]> {
   const entries = await getCollection(department, ({ data }) => !data.draft);
   const chronological = [...entries].sort((a, b) => a.data.date.date.getTime() - b.data.date.date.getTime());
   return chronological.map((entry, i) => normalizeEntry(entry, department, i + 1));
 }
 
-export async function getDepartmentStaticPaths<D extends Department>(department: D) {
+export async function getDepartmentStaticPaths<D extends CollectionDepartment>(department: D) {
   const entries = await getPublishedCollection(department);
   return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
 }
@@ -91,7 +96,7 @@ export function sortByDate<D extends Department>(entries: NormalizedEntry<D>[]):
   });
 }
 
-export async function getEntryDetail(entry: NormalizedEntry) {
+export async function getEntryDetail<D extends CollectionDepartment>(entry: NormalizedEntry<D>) {
   const { Content } = await render(entry.rawEntry);
   return { Content };
 }

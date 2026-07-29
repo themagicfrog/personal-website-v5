@@ -2,14 +2,6 @@
 title: The Trail
 date: 2024-06
 description: a week backpacking on the Pacific Crest
-coverImage: /images/events/trail/trail-cover.jpg
-images:
-  - /images/events/trail/5.png
-  - /images/events/trail/4.JPG
-  - /images/events/trail/3.JPG
-  - /images/events/trail/2.jpg
-  - /images/events/trail/1.jpeg
-  - /images/events/trail/6.jpg
 link: https://www.youtube.com/watch?v=ufMUJ9D1fi8
 ---
 

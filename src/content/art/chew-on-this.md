@@ -2,13 +2,6 @@
 title: Chew on This
 date: 2024-9
 description: a minature room made from gum
-coverImage: /images/art/chew-on-this/chew-on-this-cover.jpg
-images:
-  - /images/art/chew-on-this/1.jpg
-  - /images/art/chew-on-this/2.jpg
-  - /images/art/chew-on-this/3.png
-  - /images/art/chew-on-this/4.png
-  - /images/art/chew-on-this/5.png
 ---
 
 Chew on This is a miniature room I created from gum boxes, gum wrappers, and gum itself. The idea came to me one day while studying and chewing gum. I was surprised that gum was actually really nice to work with; it could be sculpted, and its stickiness could be like a glue to hold the room together. At the center of this tiny world is the "person", an unchewed stick of gum sleeping in a bed made from a folded gum box. This person, untouched and fresh, is in contrast to the rest of the room, where everything else has been reshaped. This gum-person symbolizes openness and potential.
