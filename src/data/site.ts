@@ -57,7 +57,7 @@ export const site: SiteData = {
       label: 'Builds',
       href: '/builds',
       accent: 'var(--builds)',
-      description: 'I build games, websites, tools, and experiments.',
+      description: 'I love to build things! I\'ve built games, websites, tools, and experiments.',
       tagline: 'games, websites, tools & experiments',
     },
     {
@@ -65,7 +65,7 @@ export const site: SiteData = {
       href: '/photography',
       accent: 'var(--photography)',
       description:
-        'I take photographs to document where I go and to pay closer attention to the details, people, and moments I might otherwise pass.',
+        'i enjoy photography because it encourages me to explore the world intentionally and allows me to experience places in new ways. i capture and share photos of people, places, and moments that are interesting, meaningful, and beautiful to me.\n\ni am especially drawn to street photography and photographing people, because i find it incredible how much the uniqueness of every person\'s life experiences and identity can be revealed through a single, honest image.',
       tagline: 'street scenes, journeys & visual collections',
     },
     {

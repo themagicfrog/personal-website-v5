@@ -14,7 +14,11 @@ const departments = site.navigation.map((item) => ({
 
 const FEATURED_ORDER: Department[] = ['builds', 'art', 'photography', 'writing', 'events'];
 
-const FEATURED_PHOTOGRAPHY_SLUGS = ['under-a-thousand-stars', 'sunlit-thoughts--tangeled-fur', 'between-orders'];
+const FEATURED_PHOTOGRAPHY_SLUGS = [
+  'under-a-thousand-stars_2025-12_Boston_Scholastic-Art-Gold',
+  'sunlit-thoughts--tangeled-fur_2025-12_Paris',
+  'between-orders_2025-03_London',
+];
 
 const featuredByDepartment = await Promise.all(
   FEATURED_ORDER.map(async (department) => {
@@ -270,7 +274,8 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    padding-block: var(--space-7);
+    padding-top: calc(var(--space-7) - var(--space-3));
+    padding-bottom: var(--space-7);
   }
 
   .scroll-cue {
@@ -343,7 +348,7 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
     line-height: 1.35;
     letter-spacing: -0.01em;
     color: var(--ink);
-    transform: translateY(-4%);
+    transform: translateY(2%);
   }
 
   .letter {
@@ -449,9 +454,9 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
     position: relative;
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px;
     width: 100%;
-    max-width: 1000px;
+    max-width: 1150px;
     min-width: 0;
     padding-block: var(--space-1);
   }
@@ -548,6 +553,11 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
     justify-content: space-between;
     gap: var(--space-2) var(--space-5);
     margin-bottom: var(--space-5);
+  }
+
+  .featured-head-text {
+    flex: 1 1 320px;
+    min-width: 0;
   }
 
   .featured-heading {

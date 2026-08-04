@@ -3,10 +3,11 @@ import Layout from '../../layouts/Layout.astro';
 import SectionHero from '../../components/SectionHero.astro';
 import PhotoGallery from '../../components/PhotoGallery.astro';
 import { getPhotographyEntries } from '../../lib/photography';
-import { accentForDepartment, descriptionForDepartment } from '../../data/site';
+import { site, accentForDepartment, descriptionForDepartment } from '../../data/site';
 
 const entries = getPhotographyEntries();
 const accent = accentForDepartment('photography');
+const instagram = site.contact.find((link) => link.label === 'Instagram');
 ---
 
 <Layout
@@ -19,7 +20,75 @@ const accent = accentForDepartment('photography');
     title="Photography"
     description={descriptionForDepartment('photography')}
     accent={accent}
-  />
+  >
+    {instagram && (
+      <a
+        slot="aside"
+        href={instagram.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="instagram-callout"
+        style={`--accent: ${accent}`}
+      >
+        <img src="/images/instagram.svg" alt="" class="instagram-icon" width="34" height="34" />
+        <span class="instagram-copy">
+          <span class="instagram-lead">i share my photography on Instagram</span>
+          <span class="instagram-cta">follow along!</span>
+        </span>
+      </a>
+    )}
+  </SectionHero>
 
   <PhotoGallery entries={entries} emptyMessage="New photographic collections will be filed here soon." accent={accent} />
 </Layout>
+
+<style>
+  .instagram-callout {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--paper-light);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-small);
+    box-shadow: 0 3px 6px -2px rgba(16, 25, 58, 0.16);
+    text-decoration: none;
+    transform: rotate(-1.4deg);
+    transition: transform 0.25s var(--ease-standard), box-shadow 0.25s var(--ease-standard),
+      border-color 0.25s var(--ease-standard);
+  }
+
+  .instagram-callout:hover,
+  .instagram-callout:focus-visible {
+    transform: rotate(0deg) translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 6px 12px -4px rgba(16, 25, 58, 0.22);
+  }
+
+  .instagram-icon {
+    flex: none;
+    width: 34px;
+    height: 34px;
+  }
+
+  .instagram-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+  }
+
+  .instagram-lead {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--ink-muted);
+  }
+
+  .instagram-cta {
+    font-family: var(--font-label);
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+  }
+</style>
