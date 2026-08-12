@@ -50,24 +50,25 @@ const { entries, emptyMessage, accent, showCta = true, layout = 'grid' } = Astro
     }
   }
 
+  /* A justified row: every card grows in proportion to its image's
+     width-to-height, so the photos share the full width and all land on the
+     same height. Below the breakpoint they stack into a single column. */
   .grid.row {
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .grid.row :global(.work-card) {
-    width: auto;
-    flex: 0 1 auto;
-  }
+  @media (min-width: 768px) {
+    .grid.row {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--space-5);
+    }
 
-  .grid.row :global(.image-frame) {
-    width: auto;
-    height: clamp(200px, 24vw, 340px);
-  }
-
-  .grid.row :global(.image-frame img) {
-    width: auto;
-    height: 100%;
+    .grid.row :global(.work-card) {
+      flex: var(--aspect-scalar, 1.3333) 1 0;
+      min-width: 0;
+    }
   }
 </style>

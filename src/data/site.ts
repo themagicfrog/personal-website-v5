@@ -65,7 +65,7 @@ export const site: SiteData = {
       href: '/photography',
       accent: 'var(--photography)',
       description:
-        'i enjoy photography because it encourages me to explore the world intentionally and allows me to experience places in new ways. i capture and share photos of people, places, and moments that are interesting, meaningful, and beautiful to me.\n\ni am especially drawn to street photography and photographing people, because i find it incredible how much the uniqueness of every person\'s life experiences and identity can be revealed through a single, honest image.',
+        'i enjoy photography because it encourages me to explore the world intentionally and allows me to experience places in new ways. i capture and share photos of people, places, and moments that are interesting, meaningful, and beautiful to me.\n\ni am especially drawn to street photography and photographing people, because i find it incredible how much uniqueness of every person\'s life experiences and identity can be shown through a single, honest shot.',
       tagline: 'street scenes, journeys & visual collections',
     },
     {

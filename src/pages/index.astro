@@ -98,7 +98,7 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
             that bring technology, art, and people together.
           </p>
           <p class="subtitle">
-            my work spans creative coding, hardware, visual art,{' '}
+            my work spans coding, hardware, visual art,{' '}
             <br class="subtitle-break" />
             writing, photography, and community programs.
           </p>
@@ -136,7 +136,7 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
             emptyMessage=""
             accent={accent}
             showCta={false}
-            layout={department === 'photography' ? 'row' : 'grid'}
+            layout="row"
           />
         </section>
       )
@@ -274,7 +274,7 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    padding-top: calc(var(--space-7) - var(--space-3));
+    padding-top: var(--space-6);
     padding-bottom: var(--space-7);
   }
 
@@ -344,11 +344,10 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
   h1 {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(2.75rem, 18vw, 12rem);
-    line-height: 1.35;
+    font-size: clamp(2.4rem, 15vw, 9.5rem);
+    line-height: 1.2;
     letter-spacing: -0.01em;
     color: var(--ink);
-    transform: translateY(2%);
   }
 
   .letter {

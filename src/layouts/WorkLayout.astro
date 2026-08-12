@@ -1,16 +1,16 @@
 ---
-import { DEPARTMENT_LABEL, type NormalizedEntry, type CollectionDepartment } from '../lib/content';
+import {
+  DEPARTMENT_LABEL,
+  type ExternalLink,
+  type NormalizedEntry,
+  type CollectionDepartment,
+} from '../lib/content';
 import { formatDateRange } from '../lib/format';
 import { accentForDepartment } from '../data/site';
 import Layout from './Layout.astro';
 import MetaLine from '../components/MetaLine.astro';
 import TagList from '../components/TagList.astro';
 import ImageWithCaption from '../components/ImageWithCaption.astro';
-
-interface ExternalLink {
-  label: string;
-  href: string;
-}
 
 interface Props {
   entry: NormalizedEntry<CollectionDepartment>;

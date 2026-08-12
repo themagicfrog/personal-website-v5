@@ -2,8 +2,11 @@
 title: Signal Lost
 date: 2025-04
 description: a 2D space platformer game
-repository: https://github.com/themagicfrog/signalLost
-demo: https://themagicfrog.itch.io/signal-lost
+links:
+  - label: Live Demo
+    href: https://themagicfrog.itch.io/signal-lost
+  - label: Repository
+    href: https://github.com/themagicfrog/signalLost
 featured: true
 featuredOrder: 2
 recognition: Judge-Award Top Three at Juice Hackathon

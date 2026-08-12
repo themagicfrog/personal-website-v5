@@ -2,10 +2,13 @@
 import Layout from '../../layouts/Layout.astro';
 import SectionHero from '../../components/SectionHero.astro';
 import WorkGrid from '../../components/WorkGrid.astro';
+import PhotoGallery from '../../components/PhotoGallery.astro';
 import { getPublishedCollection, sortByDate } from '../../lib/content';
+import { getDrawingEntries } from '../../lib/drawings';
 import { accentForDepartment, descriptionForDepartment } from '../../data/site';
 
 const entries = sortByDate(await getPublishedCollection('art'));
+const drawings = getDrawingEntries();
 const accent = accentForDepartment('art');
 ---
 
@@ -22,4 +25,40 @@ const accent = accentForDepartment('art');
   />
 
   <WorkGrid entries={entries} emptyMessage="New artwork will be filed here soon." accent={accent} />
+
+  {drawings.length > 0 && (
+    <div class="drawings-head wrap">
+      <h2 class="drawings-heading" style={`color: ${accent}`}>sketchbook</h2>
+      <p class="drawings-tagline">smaller drawings, made in a day or so</p>
+    </div>
+  )}
+
+  <PhotoGallery
+    entries={drawings}
+    emptyMessage="New drawings will be filed here soon."
+    accent={accent}
+    itemNoun="Drawing"
+  />
 </Layout>
+
+<style>
+  .drawings-head {
+    padding-top: var(--space-6);
+    margin-bottom: var(--space-5);
+  }
+
+  .drawings-heading {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    line-height: 1.2;
+  }
+
+  .drawings-tagline {
+    font-family: var(--font-label);
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-muted);
+    margin-top: var(--space-1);
+  }
+</style>

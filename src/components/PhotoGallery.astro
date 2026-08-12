@@ -8,20 +8,33 @@ interface Props {
   entries: NormalizedEntry[];
   emptyMessage: string;
   accent: string;
+  /** What one tile is, for alt text on untitled images. */
+  itemNoun?: string;
 }
 
-const { entries, emptyMessage, accent } = Astro.props;
+const { entries, emptyMessage, accent, itemNoun = 'Photograph' } = Astro.props;
 
-const photos = entries.map((entry) => ({
-  slug: entry.slug,
-  src: entry.coverImage,
-  images: entry.images.length > 0 ? entry.images : entry.coverImage ? [entry.coverImage] : [],
-  alt: entry.title,
-  title: entry.title,
-  meta: [formatDateShort(entry.date), entry.rawEntry.data.location].filter(Boolean).join(' · '),
-  recognition: entry.recognition,
-  aspectRatio: getImageAspectRatio(entry.coverImage),
-}));
+// Every photo in every collection gets its own tile — collections aren't
+// collapsed behind a single cover. Hovering a tile still surfaces the
+// collection it belongs to (title + date/location), and the lightbox steps
+// through tiles in the same order they're flattened here, i.e. collection
+// order: an entry's photos in sequence before moving to the next entry.
+const photos = entries.flatMap((entry) => {
+  const meta = [formatDateShort(entry.date), entry.rawEntry.data.location].filter(Boolean).join(' · ');
+  const images = entry.images.length > 0 ? entry.images : entry.coverImage ? [entry.coverImage] : [];
+
+  return images.map((src, imageIndex) => ({
+    entrySlug: entry.slug,
+    src,
+    imageIndex,
+    count: images.length,
+    alt: entry.title || (meta ? `${itemNoun}, ${meta}` : itemNoun),
+    title: entry.title,
+    meta,
+    recognition: entry.recognition,
+    aspectRatio: getImageAspectRatio(src),
+  }));
+});
 ---
 
 {
@@ -38,30 +51,19 @@ const photos = entries.map((entry) => ({
             class="photo-item"
             style={`--aspect: ${photo.aspectRatio}`}
             data-photo
-            data-slug={photo.slug}
+            data-entry-slug={photo.entrySlug}
             data-src={photo.src}
-            data-images={JSON.stringify(photo.images)}
+            data-image-index={photo.imageIndex}
+            data-count={photo.count}
             data-alt={photo.alt}
             data-title={photo.title}
             data-meta={photo.meta}
             data-recognition={photo.recognition ?? ''}
-            aria-label={`View ${photo.title}`}
+            aria-label={`View ${photo.alt}`}
           >
-            <span class="photo-frame" data-hover-preview={photo.images.length > 1 ? 'true' : undefined}>
-              {photo.images.length > 1 && (
-                <span class="photo-peek" aria-hidden="true" style={`background-image: url(${photo.images[1]})`} />
-              )}
+            <span class="photo-frame">
               <img class="photo-cover" src={photo.src} alt={photo.alt} loading={i < 8 ? 'eager' : 'lazy'} />
-              {photo.images.slice(1).map((src) => (
-                <img src={src} alt="" class="photo-hover-preview" loading="lazy" />
-              ))}
             </span>
-            {photo.images.length > 1 && (
-              <span class="photo-stack-badge" aria-hidden="true">
-                <span class="photo-stack-icon" />
-                {photo.images.length}
-              </span>
-            )}
             <span class="photo-caption">
               <span class="photo-title">{photo.title}</span>
               {(photo.meta || photo.recognition) && (
@@ -168,86 +170,6 @@ const photos = entries.map((entry) => ({
   .photo-item:hover .photo-cover,
   .photo-item:focus-visible .photo-cover {
     transform: scale(1.015);
-  }
-
-  .photo-peek {
-    position: absolute;
-    z-index: 0;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    border: 3px solid var(--paper-light);
-    transform: rotate(3deg) translate(2%, 3%);
-    transition: transform 0.3s var(--ease-standard);
-  }
-
-  .photo-hover-preview {
-    position: absolute;
-    z-index: 2;
-    inset: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .photo-hover-preview.is-active {
-    opacity: 1;
-  }
-
-  .photo-item:hover .photo-peek,
-  .photo-item:focus-visible .photo-peek {
-    transform: rotate(5deg) translate(3%, 4%);
-  }
-
-  .photo-stack-badge {
-    position: absolute;
-    z-index: 3;
-    top: var(--space-3);
-    right: var(--space-3);
-    display: flex;
-    align-items: center;
-    gap: 0.3em;
-    padding: 0.3em 0.6em;
-    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
-    border: 2px solid var(--accent);
-    background: color-mix(in srgb, var(--accent) 16%, var(--paper-light));
-    box-shadow: 2px 2px 0 -1px var(--paper-light), 3px 3px 0 -1px var(--accent);
-    transform: rotate(-6deg);
-    font-family: var(--font-label);
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--ink-dark);
-    transition: transform 0.2s var(--ease-standard);
-  }
-
-  .photo-item:hover .photo-stack-badge,
-  .photo-item:focus-visible .photo-stack-badge {
-    transform: rotate(-6deg) scale(1.1);
-  }
-
-  .photo-stack-icon {
-    position: relative;
-    display: block;
-    width: 0.7em;
-    height: 0.7em;
-    border-radius: 1px;
-    border: 1.5px solid var(--ink-dark);
-    background: var(--paper-light);
-  }
-
-  .photo-stack-icon::before {
-    content: '';
-    position: absolute;
-    inset: -3px -3px auto auto;
-    z-index: -1;
-    width: 0.7em;
-    height: 0.7em;
-    border-radius: 1px;
-    border: 1.5px solid var(--ink-dark);
-    background: var(--paper-light);
   }
 
   .photo-caption {
@@ -505,36 +427,10 @@ const photos = entries.map((entry) => ({
 </style>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-hover-preview]').forEach((frame) => {
-    const previews = Array.from(frame.querySelectorAll<HTMLImageElement>('.photo-hover-preview'));
-    if (previews.length === 0) return;
-
-    let index = -1;
-    let timer: ReturnType<typeof setInterval> | undefined;
-
-    function clearActive() {
-      previews.forEach((img) => img.classList.remove('is-active'));
-    }
-
-    function advance() {
-      clearActive();
-      index = (index + 1) % previews.length;
-      previews[index].classList.add('is-active');
-    }
-
-    frame.addEventListener('mouseenter', () => {
-      index = -1;
-      advance();
-      timer = setInterval(advance, 900);
-    });
-
-    frame.addEventListener('mouseleave', () => {
-      clearInterval(timer);
-      clearActive();
-      index = -1;
-    });
-  });
-
+  // Every tile is its own photo now, already laid out in collection order
+  // (an entry's photos in sequence, then the next entry). So the lightbox
+  // just steps through this flat list — no separate "which image within
+  // the entry" bookkeeping needed anymore.
   const items = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-photo]'));
   const lightbox = document.querySelector<HTMLElement>('[data-lightbox]');
 
@@ -550,47 +446,44 @@ const photos = entries.map((entry) => ({
     const dotsEl = lightbox.querySelector<HTMLElement>('[data-lightbox-dots]');
 
     let activeIndex = -1;
-    let activeImage = 0;
     let lastFocused: HTMLElement | null = null;
 
-    function imagesFor(item: HTMLButtonElement): string[] {
-      try {
-        const parsed = JSON.parse(item.dataset.images ?? '[]');
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      } catch {
-        // fall through to single-image fallback
-      }
-      return item.dataset.src ? [item.dataset.src] : [];
-    }
-
-    function show(index: number, imageIndex = 0) {
+    function show(index: number) {
       const item = items[index];
       if (!item || !img || !titleEl || !metaEl || !countEl || !recognitionEl || !dotsEl) return;
 
-      const images = imagesFor(item);
       activeIndex = index;
-      activeImage = Math.min(Math.max(imageIndex, 0), Math.max(images.length - 1, 0));
+      const count = Number(item.dataset.count ?? '1');
+      const imageIndex = Number(item.dataset.imageIndex ?? '0');
 
-      img.src = images[activeImage] ?? item.dataset.src ?? '';
+      img.src = item.dataset.src ?? '';
       img.alt = item.dataset.alt ?? '';
       titleEl.textContent = item.dataset.title ?? '';
       metaEl.textContent = item.dataset.meta ?? '';
-      countEl.textContent = images.length > 1 ? `${activeImage + 1} / ${images.length}` : '';
+      countEl.textContent = count > 1 ? `${imageIndex + 1} / ${count}` : '';
       recognitionEl.textContent = item.dataset.recognition ?? '';
 
+      // Siblings sharing this entry, so the dots both mark that the photo
+      // belongs to a collection and let you jump straight to another shot in it.
+      const entrySlug = item.dataset.entrySlug;
+      const siblingIndices = count > 1
+        ? items.reduce<number[]>((acc, it, i) => {
+            if (it.dataset.entrySlug === entrySlug) acc.push(i);
+            return acc;
+          }, [])
+        : [];
+
       dotsEl.innerHTML = '';
-      dotsEl.hidden = images.length <= 1;
-      if (images.length > 1) {
-        images.forEach((_, i) => {
-          const dot = document.createElement('button');
-          dot.type = 'button';
-          dot.className = 'lightbox-dot';
-          dot.setAttribute('aria-label', `Go to image ${i + 1}`);
-          dot.setAttribute('aria-current', String(i === activeImage));
-          dot.addEventListener('click', () => show(activeIndex, i));
-          dotsEl.appendChild(dot);
-        });
-      }
+      dotsEl.hidden = siblingIndices.length <= 1;
+      siblingIndices.forEach((siblingIndex, i) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'lightbox-dot';
+        dot.setAttribute('aria-label', `Go to image ${i + 1}`);
+        dot.setAttribute('aria-current', String(siblingIndex === activeIndex));
+        dot.addEventListener('click', () => show(siblingIndex));
+        dotsEl.appendChild(dot);
+      });
     }
 
     function open(index: number) {
@@ -606,21 +499,8 @@ const photos = entries.map((entry) => ({
       lastFocused?.focus();
     }
 
-    // Steps within the open entry's images first; only crosses to the
-    // adjacent gallery entry once you're at the first/last image of the
-    // current collection.
     function step(delta: number) {
-      const currentImages = imagesFor(items[activeIndex]);
-      const nextImage = activeImage + delta;
-
-      if (nextImage >= 0 && nextImage < currentImages.length) {
-        show(activeIndex, nextImage);
-        return;
-      }
-
-      const nextEntry = (activeIndex + delta + items.length) % items.length;
-      const entryImages = imagesFor(items[nextEntry]);
-      show(nextEntry, delta > 0 ? 0 : entryImages.length - 1);
+      show((activeIndex + delta + items.length) % items.length);
     }
 
     items.forEach((item, index) => {
@@ -647,14 +527,14 @@ const photos = entries.map((entry) => ({
       }
     });
 
-    function openBySlug(slug: string) {
-      const index = items.findIndex((item) => item.dataset.slug === slug);
+    function openByEntrySlug(slug: string) {
+      const index = items.findIndex((item) => item.dataset.entrySlug === slug);
       if (index === -1) return;
       items[index].scrollIntoView({ block: 'center' });
       open(index);
     }
 
     const initialSlug = window.location.hash.slice(1);
-    if (initialSlug) openBySlug(initialSlug);
+    if (initialSlug) openByEntrySlug(initialSlug);
   }
 </script>

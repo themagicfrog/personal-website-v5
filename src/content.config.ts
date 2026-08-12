@@ -16,13 +16,18 @@ function flexibleDate() {
   });
 }
 
+const externalLink = z.object({
+  label: z.string(),
+  href: z.string().url(),
+});
+
 const base = {
   title: z.string(),
   date: flexibleDate(),
   endDate: flexibleDate().optional(),
   description: z.string(),
   aspectRatio: z.string().optional(),
-  link: z.string().url().optional(),
+  links: z.array(externalLink).default([]),
   featured: z.boolean().default(false),
   featuredOrder: z.number().optional(),
   draft: z.boolean().default(false),
@@ -41,8 +46,6 @@ const builds = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/builds' }),
   schema: z.object({
     ...base,
-    repository: z.string().url().optional(),
-    demo: z.string().url().optional(),
     projectType: z.string().optional(),
   }),
 });
@@ -74,8 +77,6 @@ const events = defineCollection({
     ...base,
     attendance: z.number().optional(),
     eventType: z.string().optional(),
-    repository: z.string().url().optional(),
-    demo: z.string().url().optional(),
   }),
 });
 

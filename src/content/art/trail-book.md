@@ -5,7 +5,9 @@ description: a handmade book
 featured: true
 featuredOrder: 2
 recognition: Scholastic Expanded Art Gold Key
-link: https://docs.google.com/presentation/d/10uJnXMQ8QBkAP3cAIPET5hN4jJUoEL9lMYbe5iTUSe0/edit?usp=sharing
+links:
+  - label: See More
+    href: https://docs.google.com/presentation/d/10uJnXMQ8QBkAP3cAIPET5hN4jJUoEL9lMYbe5iTUSe0/edit?usp=sharing
 ---
 
 During the summer, I went on a life-changing backpacking journey along the Pacific Crest Trail (the website and the documentary). Over the course of a week, I hiked a total of 30 miles alongside 29 other teenagers from 9 countries and 15 states.

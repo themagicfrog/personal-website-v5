@@ -2,8 +2,11 @@
 title: Celestial
 date: 2024-10
 description: a one-day girls hackathon in Shopify Toronto
-repository: https://github.com/emma-x1/Toronto-DoS-Celestial
-link: https://celestial-hackathon-toronto.vercel.app/
+links:
+  - label: Repository
+    href: https://github.com/emma-x1/Toronto-DoS-Celestial
+  - label: See More
+    href: https://celestial-hackathon-toronto.vercel.app/
 featured: true
 featuredOrder: 3
 ---

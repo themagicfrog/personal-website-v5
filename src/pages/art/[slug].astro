@@ -8,16 +8,13 @@ const { entry } = Astro.props;
 const { Content } = await getEntryDetail(entry);
 
 const data = entry.rawEntry.data;
-const links = [
-  data.link ? { label: 'See More', href: data.link } : null,
-].filter((link): link is { label: string; href: string } => link !== null);
 ---
 
 <WorkLayout
   entry={entry}
   department="art"
   metaItems={[data.medium, data.dimensions, data.materials.join(' · '), data.exhibition]}
-  links={links}
+  links={data.links}
 >
   <Content />
 </WorkLayout>

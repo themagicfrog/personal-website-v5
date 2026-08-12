@@ -2,8 +2,11 @@
 title: Jumpstart
 date: 2026-01
 description: a month-long game dev program
-repository: https://github.com/themagicfrog/jumpstart
-demo: https://v2.jumpstart.hackclub.com/games/
+links:
+  - label: Live Demo
+    href: https://v2.jumpstart.hackclub.com/games/
+  - label: Repository
+    href: https://github.com/themagicfrog/jumpstart
 featured: true
 featuredOrder: 1
 ---
