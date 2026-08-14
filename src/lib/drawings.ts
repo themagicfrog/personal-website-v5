@@ -5,9 +5,6 @@ import { generateArchiveCode } from './format';
 
 const DIR = join(process.cwd(), 'public', 'images', 'art', 'drawings');
 
-// Sketches are filed by date alone: "YYYY-MM[-DD][_n].webp", where the optional
-// _n only separates several drawings made in the same month. Drop a new file in
-// public/images/art/drawings/ and it shows up in the gallery.
 const FILE_PATTERN = /^(\d{4}-\d{2}(?:-\d{2})?)(?:_(\d+))?\.webp$/i;
 
 interface ParsedDrawing {

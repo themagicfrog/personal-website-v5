@@ -1,5 +1,5 @@
 ---
-import { DEPARTMENT_LABEL, DEPARTMENT_LABEL_SINGULAR, entryData, type NormalizedEntry } from '../lib/content';
+import { DEPARTMENT_LABEL, entryData, type NormalizedEntry } from '../lib/content';
 import { formatYearRange } from '../lib/format';
 import { accentForDepartment } from '../data/site';
 import { getImageAspectRatio } from '../lib/image';
@@ -8,10 +8,9 @@ import MetaLine from './MetaLine.astro';
 
 interface Props {
   entry: NormalizedEntry;
-  showCta?: boolean;
 }
 
-const { entry, showCta = true } = Astro.props;
+const { entry } = Astro.props;
 const accent = accentForDepartment(entry.department);
 const extra = entryData(entry);
 const typeLine =
@@ -25,9 +24,6 @@ const aspectRatio =
 const href = entry.department === 'photography' ? `/photography#${entry.slug}` : entry.href;
 const previewImages = entry.images;
 
-// Width-to-height as a plain number, so a justified row (WorkGrid's "row"
-// layout) can grow each card in proportion to its image and land every photo
-// on the same height.
 const [ratioWidth, ratioHeight] = aspectRatio.split('/').map((part) => Number(part.trim()));
 const aspectScalar = ratioWidth > 0 && ratioHeight > 0 ? ratioWidth / ratioHeight : 4 / 3;
 ---
@@ -61,7 +57,6 @@ const aspectScalar = ratioWidth > 0 && ratioHeight > 0 ? ratioWidth / ratioHeigh
           {entry.recognition}
         </span>
       )}
-      {showCta && <span class="cta">View {DEPARTMENT_LABEL_SINGULAR[entry.department]} →</span>}
     </div>
   </a>
 </article>
@@ -186,19 +181,6 @@ const aspectScalar = ratioWidth > 0 && ratioHeight > 0 ? ratioWidth / ratioHeigh
     transform: rotate(-8deg);
   }
 
-  .cta {
-    font-family: var(--font-label);
-    font-size: 0.82rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--ink);
-    margin-top: var(--space-1);
-  }
-
-  .card-link:hover .cta,
-  .card-link:focus-visible .cta {
-    text-decoration: underline;
-  }
 </style>
 
 <script>

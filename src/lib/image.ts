@@ -24,10 +24,6 @@ interface EntryImages {
   images: string[];
 }
 
-/**
- * Auto-discovers an entry's cover and gallery images from public/images/<department>/<slug>/:
- * a file named "cover.*" becomes the cover, and any "1.*", "2.*", ... become the gallery, in order.
- */
 export function getEntryImages(department: string, slug: string): EntryImages {
   const dir = join(process.cwd(), 'public', 'images', department, slug);
 

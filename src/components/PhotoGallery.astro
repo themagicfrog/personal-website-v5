@@ -1,5 +1,5 @@
 ---
-import type { NormalizedEntry } from '../lib/content';
+import { entryData, type NormalizedEntry } from '../lib/content';
 import { getImageAspectRatio } from '../lib/image';
 import { formatDateShort } from '../lib/format';
 import EmptyState from './EmptyState.astro';
@@ -8,20 +8,15 @@ interface Props {
   entries: NormalizedEntry[];
   emptyMessage: string;
   accent: string;
-  /** What one tile is, for alt text on untitled images. */
   itemNoun?: string;
 }
 
 const { entries, emptyMessage, accent, itemNoun = 'Photograph' } = Astro.props;
 
-// Every photo in every collection gets its own tile — collections aren't
-// collapsed behind a single cover. Hovering a tile still surfaces the
-// collection it belongs to (title + date/location), and the lightbox steps
-// through tiles in the same order they're flattened here, i.e. collection
-// order: an entry's photos in sequence before moving to the next entry.
 const photos = entries.flatMap((entry) => {
   const meta = [formatDateShort(entry.date), entry.rawEntry.data.location].filter(Boolean).join(' · ');
   const images = entry.images.length > 0 ? entry.images : entry.coverImage ? [entry.coverImage] : [];
+  const featured = new Set((entryData(entry).featuredImages as string[] | undefined) ?? []);
 
   return images.map((src, imageIndex) => ({
     entrySlug: entry.slug,
@@ -33,8 +28,11 @@ const photos = entries.flatMap((entry) => {
     meta,
     recognition: entry.recognition,
     aspectRatio: getImageAspectRatio(src),
+    featured: featured.has(src),
   }));
 });
+
+const featuredPhotos = photos.filter((photo) => photo.featured);
 ---
 
 {
@@ -44,6 +42,48 @@ const photos = entries.flatMap((entry) => {
     </div>
   ) : (
     <>
+      {featuredPhotos.length > 0 && (
+        <section class="featured wrap" style={`--accent: ${accent}`}>
+          <div class="featured-head">
+            <h2 class="featured-heading">featured</h2>
+            <p class="featured-tagline">a few of my favorites</p>
+          </div>
+          <div class="featured-row">
+            <div class="featured-track">
+              {[...featuredPhotos, ...featuredPhotos].map((photo, i) => {
+                const isClone = i >= featuredPhotos.length;
+                return (
+                  <button
+                    type="button"
+                    class="photo-item featured-item"
+                    style={`--aspect: ${photo.aspectRatio}`}
+                    data-featured-photo
+                    data-src={photo.src}
+                    aria-label={`View ${photo.alt}`}
+                    aria-hidden={isClone ? 'true' : undefined}
+                    tabindex={isClone ? -1 : undefined}
+                  >
+                    <span class="photo-frame">
+                      <img class="photo-cover" src={photo.src} alt={isClone ? '' : photo.alt} loading="eager" />
+                    </span>
+                    <span class="photo-caption">
+                      <span class="photo-title">{photo.title}</span>
+                      {(photo.meta || photo.recognition) && (
+                        <span class="photo-sub">
+                          {photo.meta && <span class="photo-meta">{photo.meta}</span>}
+                          {photo.recognition && <span class="photo-recognition">{photo.recognition}</span>}
+                        </span>
+                      )}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div class="featured-rule" aria-hidden="true"></div>
+        </section>
+      )}
+
       <div class="photo-gallery wrap" style={`--accent: ${accent}`}>
         {photos.map((photo, i) => (
           <button
@@ -108,6 +148,96 @@ const photos = entries.flatMap((entry) => {
 }
 
 <style>
+  .featured {
+    padding-bottom: var(--space-7);
+  }
+
+  .featured-head {
+    margin-bottom: var(--space-5);
+  }
+
+  .featured-heading {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    line-height: 1.2;
+    color: var(--accent);
+  }
+
+  .featured-tagline {
+    margin-top: var(--space-1);
+    font-family: var(--font-label);
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-muted);
+  }
+
+  .featured-row {
+    --featured-height: 13rem;
+    --featured-gap: var(--space-4);
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+  }
+
+  .featured-track {
+    display: flex;
+    width: max-content;
+    gap: var(--featured-gap);
+    animation: featured-drift 60s linear infinite;
+  }
+
+  @keyframes featured-drift {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-50% - var(--featured-gap) / 2));
+    }
+  }
+
+  .featured-row:hover .featured-track,
+  .featured-row:focus-within .featured-track {
+    animation-play-state: paused;
+  }
+
+  .featured-row .featured-item {
+    flex: 0 0 calc(var(--aspect) * var(--featured-height));
+    width: calc(var(--aspect) * var(--featured-height));
+    height: var(--featured-height);
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 900px) {
+    .featured-row {
+      --featured-height: 10rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .featured-row {
+      --featured-height: 8rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .featured-row {
+      overflow-x: auto;
+    }
+
+    .featured-track {
+      animation: none;
+    }
+  }
+
+  .featured-rule {
+    margin-top: var(--space-7);
+    height: 1px;
+    background-color: color-mix(in srgb, var(--ink) 18%, transparent);
+  }
+
   .photo-gallery {
     column-count: 1;
     column-gap: var(--space-5);
@@ -427,10 +557,6 @@ const photos = entries.flatMap((entry) => {
 </style>
 
 <script>
-  // Every tile is its own photo now, already laid out in collection order
-  // (an entry's photos in sequence, then the next entry). So the lightbox
-  // just steps through this flat list — no separate "which image within
-  // the entry" bookkeeping needed anymore.
   const items = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-photo]'));
   const lightbox = document.querySelector<HTMLElement>('[data-lightbox]');
 
@@ -463,8 +589,6 @@ const photos = entries.flatMap((entry) => {
       countEl.textContent = count > 1 ? `${imageIndex + 1} / ${count}` : '';
       recognitionEl.textContent = item.dataset.recognition ?? '';
 
-      // Siblings sharing this entry, so the dots both mark that the photo
-      // belongs to a collection and let you jump straight to another shot in it.
       const entrySlug = item.dataset.entrySlug;
       const siblingIndices = count > 1
         ? items.reduce<number[]>((acc, it, i) => {
@@ -505,6 +629,13 @@ const photos = entries.flatMap((entry) => {
 
     items.forEach((item, index) => {
       item.addEventListener('click', () => open(index));
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-featured-photo]').forEach((tile) => {
+      tile.addEventListener('click', () => {
+        const index = items.findIndex((item) => item.dataset.src === tile.dataset.src);
+        if (index !== -1) open(index);
+      });
     });
 
     backdrop.forEach((el) => el.addEventListener('click', close));

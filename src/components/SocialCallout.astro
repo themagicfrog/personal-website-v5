@@ -1,0 +1,76 @@
+---
+interface Props {
+  href: string;
+  icon: string;
+  lead: string;
+  cta: string;
+  accent: string;
+}
+
+const { href, icon, lead, cta, accent } = Astro.props;
+---
+
+<a
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="social-callout"
+  style={`--accent: ${accent}`}
+>
+  <img src={icon} alt="" class="social-icon" width="34" height="34" />
+  <span class="social-copy">
+    <span class="social-lead">{lead}</span>
+    <span class="social-cta">{cta}</span>
+  </span>
+</a>
+
+<style>
+  .social-callout {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--paper-light);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-small);
+    box-shadow: 0 3px 6px -2px rgba(16, 25, 58, 0.16);
+    text-decoration: none;
+    transform: rotate(-1.4deg);
+    transition: transform 0.25s var(--ease-standard), box-shadow 0.25s var(--ease-standard),
+      border-color 0.25s var(--ease-standard);
+  }
+
+  .social-callout:hover,
+  .social-callout:focus-visible {
+    transform: rotate(0deg) translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 6px 12px -4px rgba(16, 25, 58, 0.22);
+  }
+
+  .social-icon {
+    flex: none;
+    width: 34px;
+    height: 34px;
+  }
+
+  .social-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+  }
+
+  .social-lead {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--ink-muted);
+  }
+
+  .social-cta {
+    font-family: var(--font-label);
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+  }
+</style>

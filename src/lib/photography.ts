@@ -5,6 +5,9 @@ import { generateArchiveCode } from './format';
 
 const DIR = join(process.cwd(), 'public', 'images', 'photography');
 
+const FEATURED_MARKER = '~';
+const COLLECTION_FILE = new RegExp(`^(\\d+)(${FEATURED_MARKER})?\\.webp$`, 'i');
+
 function decode(slug: string): string {
   return slug
     .split('--')
@@ -24,10 +27,7 @@ interface ParsedDescriptor {
   location?: string;
   recognition?: string;
 }
-
-// Parses "[title]_YYYY-MM[-DD][_location][_recognition]" — used both for a solo photo's
-// filename and a collection's folder name. Title, location, and recognition are all optional;
-// only the date is required.
+                         
 function parseDescriptor(base: string): ParsedDescriptor | null {
   const parts = base.split('_');
 
@@ -54,13 +54,19 @@ function parseDescriptor(base: string): ParsedDescriptor | null {
 interface ParsedEntry extends ParsedDescriptor {
   slug: string;
   images: string[];
+  featuredImages: string[];
 }
 
 function parseSoloPhoto(file: string): ParsedEntry | null {
-  const base = file.replace(/\.webp$/i, '');
+  const name = file.replace(/\.webp$/i, '');
+  const isFeatured = name.endsWith(FEATURED_MARKER);
+  const base = isFeatured ? name.slice(0, -FEATURED_MARKER.length) : name;
+
   const descriptor = parseDescriptor(base);
   if (!descriptor) return null;
-  return { ...descriptor, slug: base, images: [`/images/photography/${file}`] };
+
+  const src = `/images/photography/${file}`;
+  return { ...descriptor, slug: base, images: [src], featuredImages: isFeatured ? [src] : [] };
 }
 
 function parseCollection(folder: string): ParsedEntry | null {
@@ -68,15 +74,20 @@ function parseCollection(folder: string): ParsedEntry | null {
   if (!descriptor) return null;
 
   const numbered = readdirSync(join(DIR, folder))
-    .map((file) => ({ n: Number(/^(\d+)\.webp$/i.exec(file)?.[1]), file }))
-    .filter((entry): entry is { n: number; file: string } => !Number.isNaN(entry.n))
+    .map((file) => {
+      const match = COLLECTION_FILE.exec(file);
+      return { n: Number(match?.[1]), featured: Boolean(match?.[2]), file };
+    })
+    .filter((entry): entry is { n: number; featured: boolean; file: string } => !Number.isNaN(entry.n))
     .sort((a, b) => a.n - b.n);
   if (numbered.length === 0) return null;
 
+  const src = (file: string) => `/images/photography/${folder}/${file}`;
   return {
     ...descriptor,
     slug: folder,
-    images: numbered.map(({ file }) => `/images/photography/${folder}/${file}`),
+    images: numbered.map(({ file }) => src(file)),
+    featuredImages: numbered.filter(({ featured }) => featured).map(({ file }) => src(file)),
   };
 }
 
@@ -118,6 +129,6 @@ export function getPhotographyEntries(): NormalizedEntry<'photography'>[] {
     recognition: entry.recognition,
     archiveCode: generateArchiveCode('photography', i + 1),
     href: `/photography#${entry.slug}`,
-    rawEntry: { data: { location: entry.location } },
+    rawEntry: { data: { location: entry.location, featuredImages: entry.featuredImages } },
   }));
 }

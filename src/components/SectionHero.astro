@@ -11,19 +11,17 @@ const descriptionParagraphs = description.split('\n\n');
 ---
 
 <header class="section-hero wrap" style={`--accent: ${accent}`}>
-  <div class="section-hero-top" class:list={{ 'has-aside': hasAside }}>
-    <div class="section-hero-main">
-      <h1 class="title-texture">{title}</h1>
-      {descriptionParagraphs.map((paragraph) => (
-        <p class="description">{paragraph}</p>
-      ))}
-    </div>
+  <div class="section-hero-top">
+    <h1 class="title-texture">{title}</h1>
     {hasAside && (
       <div class="section-hero-aside">
         <slot name="aside" />
       </div>
     )}
   </div>
+  {descriptionParagraphs.map((paragraph) => (
+    <p class="description" set:html={paragraph}></p>
+  ))}
   <div class="rule" aria-hidden="true"></div>
 </header>
 
@@ -35,41 +33,45 @@ const descriptionParagraphs = description.split('\n\n');
   .section-hero-top {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: var(--space-5);
-  }
-
-  .section-hero-main {
-    flex: 1 1 320px;
-    min-width: 0;
+    align-items: center;
+    gap: var(--space-4) var(--space-6);
+    margin-bottom: var(--space-5);
   }
 
   .section-hero-aside {
-    flex: 0 1 340px;
-    display: flex;
-    justify-content: flex-end;
+    flex: 0 0 auto;
+    margin-inline-start: auto;
   }
 
   h1 {
     font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(3rem, 8vw, 6.5rem);
-    line-height: 1.35;
+    line-height: 1.1;
     letter-spacing: -0.02em;
-    margin-bottom: var(--space-5);
   }
 
   .description {
     font-family: var(--font-serif);
     font-size: clamp(1.15rem, 2vw, 1.6rem);
     line-height: 1.45;
-    max-width: 62ch;
     color: var(--ink);
   }
 
   .description + .description {
     margin-top: var(--space-4);
+  }
+
+  .description :global(a) {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .description :global(a:hover),
+  .description :global(a:focus-visible) {
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+    text-decoration-thickness: 2px;
   }
 
   .rule {

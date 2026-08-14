@@ -1,7 +1,7 @@
 ---
 title: Acoustic Architecture Models
 date: 2026-07
-description: a study on space & sound with a ray-tracer
+description: a computational study on space and sound
 links:
   - label: Read Paper
     href: https://community.wolfram.com/groups/-/m/t/3751941?p_p_auth=Mco1WiFu

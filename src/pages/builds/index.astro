@@ -2,11 +2,13 @@
 import Layout from '../../layouts/Layout.astro';
 import SectionHero from '../../components/SectionHero.astro';
 import WorkGrid from '../../components/WorkGrid.astro';
+import SocialCallout from '../../components/SocialCallout.astro';
 import { getPublishedCollection, sortByDate } from '../../lib/content';
-import { accentForDepartment, descriptionForDepartment } from '../../data/site';
+import { site, accentForDepartment, descriptionForDepartment } from '../../data/site';
 
 const entries = sortByDate(await getPublishedCollection('builds'));
 const accent = accentForDepartment('builds');
+const github = site.contact.find((link) => link.label === 'GitHub');
 ---
 
 <Layout
@@ -19,7 +21,18 @@ const accent = accentForDepartment('builds');
     title="Builds"
     description={descriptionForDepartment('builds')}
     accent={accent}
-  />
+  >
+    {github && (
+      <SocialCallout
+        slot="aside"
+        href={github.href}
+        icon="/images/github.svg"
+        lead="i open-source my builds on Github"
+        cta="take a look!"
+        accent={accent}
+      />
+    )}
+  </SectionHero>
 
   <WorkGrid entries={entries} emptyMessage="New builds will be filed here soon." accent={accent} />
 </Layout>

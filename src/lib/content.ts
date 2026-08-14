@@ -46,7 +46,6 @@ export function entryData(entry: NormalizedEntry): Record<string, unknown> {
   return entry.rawEntry.data as Record<string, unknown>;
 }
 
-/** One button in the header of a work page — see the `links` frontmatter field. */
 export interface ExternalLink {
   label: string;
   href: string;

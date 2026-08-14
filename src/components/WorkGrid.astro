@@ -7,11 +7,10 @@ interface Props {
   entries: NormalizedEntry[];
   emptyMessage: string;
   accent: string;
-  showCta?: boolean;
   layout?: 'grid' | 'row';
 }
 
-const { entries, emptyMessage, accent, showCta = true, layout = 'grid' } = Astro.props;
+const { entries, emptyMessage, accent, layout = 'grid' } = Astro.props;
 ---
 
 <div class="wrap">
@@ -19,7 +18,7 @@ const { entries, emptyMessage, accent, showCta = true, layout = 'grid' } = Astro
     <EmptyState message={emptyMessage} accent={accent} />
   ) : (
     <div class:list={['grid', { row: layout === 'row' }]}>
-      {entries.map((entry) => <WorkCard entry={entry} showCta={showCta} />)}
+      {entries.map((entry) => <WorkCard entry={entry} />)}
     </div>
   )}
 </div>
@@ -50,9 +49,6 @@ const { entries, emptyMessage, accent, showCta = true, layout = 'grid' } = Astro
     }
   }
 
-  /* A justified row: every card grows in proportion to its image's
-     width-to-height, so the photos share the full width and all land on the
-     same height. Below the breakpoint they stack into a single column. */
   .grid.row {
     display: flex;
     flex-direction: column;
