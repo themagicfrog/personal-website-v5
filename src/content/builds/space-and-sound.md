@@ -4,7 +4,7 @@ date: 2026-07
 description: a computational study on space and sound
 links:
   - label: Read Paper
-    href: https://community.wolfram.com/groups/-/m/t/3751941?p_p_auth=Mco1WiFu
+    href: https://community.wolfram.com/t/wsrp26-creating-models-of-acoustical-properties-in-varying-architectural-spaces/27215
 featured: true
 featuredOrder: 1
 recognition: Wolfram Summer Research Program 2026
