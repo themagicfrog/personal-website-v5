@@ -48,7 +48,6 @@ const featuredByDepartment = await Promise.all(
 );
 
 const currentYear = new Date().getFullYear();
-const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 ---
 
 <Layout title={site.title} description="Estella Gu — builds, art, photography, writing, and events from a high schooler combining technology, art and community.">
@@ -177,7 +176,6 @@ const lastUpdated = new Date().toLocaleDateString('en-US', { month: 'long', day:
     </ul>
 
     <div class="footer-meta">
-      <span>Last updated {lastUpdated}</span>
       <span>© {currentYear} Estella Gu</span>
     </div>
   </footer>

@@ -3,7 +3,7 @@ title: Paper Person
 date: 2026-01
 description: a fantasy short story
 featured: true
-recognition: Scholastic Writing Gold Key and American Voices Nominee
+recognition: Scholastic Writing Regional Gold Key and American Voices Nominee
 links:
   - label: See More
     href: https://docs.google.com/document/d/1Y6fB_vSWyawucYXhelljakwTQ4108lc6YyVwJDNX-Ho/edit?usp=sharing

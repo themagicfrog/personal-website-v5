@@ -4,7 +4,7 @@ date: 2024-12
 description: a handmade book
 featured: true
 featuredOrder: 2
-recognition: Scholastic Expanded Art Gold Key
+recognition: Scholastic Expanded Art Regional Gold Key
 links:
   - label: See More
     href: https://docs.google.com/presentation/d/10uJnXMQ8QBkAP3cAIPET5hN4jJUoEL9lMYbe5iTUSe0/edit?usp=sharing
