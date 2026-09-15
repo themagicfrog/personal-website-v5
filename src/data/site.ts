@@ -41,7 +41,7 @@ export function taglineForDepartment(department: string): string {
 export const site: SiteData = {
   title: 'Estella Gu',
   description:
-    'Portfolio of Estella Gu — a writer, artist, programmer, photographer, and organizer based in Massachusetts, making games, stories, photographs, objects, websites, and experiments.',
+    'personal portfolio of Estella Gu — a writer, artist, programmer, photographer, and organizer in Massachusetts',
   email: 'estella.tianxing@gmail.com',
 
   navigation: [
@@ -65,21 +65,21 @@ export const site: SiteData = {
       href: '/photography',
       accent: 'var(--photography)',
       description:
-        'i enjoy photography because it encourages me to explore the world intentionally and allows me to experience places in a more thoughtful way. i capture and share photos of people, places, and moments that are interesting, meaningful, and beautiful to me.\n\ni am especially drawn to street photography and photographing people, because i find it incredible how much uniqueness of every person\'s life experiences and identity can be shown through a single, honest shot.',
+        'i enjoy photography because it encourages me to explore the world intentionally and allows me to experience places in a more thoughtful way. i capture and share photos of people, places, and moments that are interesting, meaningful, and beautiful to me.\n\ni am especially drawn to street photography and photographing people, because i think it so so cool how much uniqueness of every person\'s life experiences and identity can be shown through a picture.',
       tagline: 'street scenes, journeys & visual collections',
     },
     {
       label: 'Writing',
       href: '/writing',
       accent: 'var(--writing)',
-      description: 'i love writing because it gives me a way to explore my ideas, people, and experiences more deeply.\n\ni write fiction, news, essays, and experimental pieces. i especially enjoy science fiction and mystery.',
+      description: 'i love writing because it gives me a way to explore my ideas, people, and experiences more deeply.\n\ni write fiction, essays, and experimental pieces. i like science fiction and mystery.',
       tagline: 'fiction, journalism, essays & strange ideas',
     },
     {
       label: 'Art',
       href: '/art',
       accent: 'var(--art)',
-      description: 'i make art because it is fun! i enjoy being able to take an idea and give it a visual form with my own interpretation. i like experimenting with different materials and finding new ways to combine them.\n\ni work across drawing, digital art, 3D modeling, mixed media and i am constantly trying new things. a lot of my work is inspired by people, everyday life, nature, and the small details or ideas that catch my attention.',
+      description: 'i make art because it is fun! i enjoy being able to take an idea and give it a visual form with my own interpretation. i like experimenting with different materials and finding new ways to combine them.\n\ni work across drawing, digital art, 3D modeling, mixed media and i am always trying new things. a lot of my work is inspired by people, everyday life, nature, and the small details or ideas that catch my attention.',
       tagline: 'drawings, books, objects & mixed media',
     },
     {
